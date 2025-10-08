@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitZone - Gerenciamento de Treinos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>💪 FitZone</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#exercicios" class="nav-link active">Exercícios</a></li>
+                        <li><a href="#treinos" class="nav-link">Meus Treinos</a></li>
+                        <li><a href="#plano" class="nav-link">Plano Semanal</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Seção Exercícios -->
+            <section id="exercicios" class="section active">
+                <div class="section-header">
+                    <h2>📋 Biblioteca de Exercícios</h2>
+                    <button class="btn btn-primary" onclick="showAddExerciseModal()">
+                        + Novo Exercício
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filters">
+                    <input type="text" id="searchExercise" class="input" placeholder="🔍 Buscar exercício...">
+                    <select id="filterMuscleGroup" class="select">
+                        <option value="">Todos os Grupos Musculares</option>
+                    </select>
+                </div>
+
+                <!-- Lista de Exercícios -->
+                <div id="exercisesList" class="grid">
+                    <!-- Exercícios serão carregados aqui -->
+                </div>
+            </section>
+
+            <!-- Seção Treinos -->
+            <section id="treinos" class="section">
+                <div class="section-header">
+                    <h2>🏋️ Meus Treinos</h2>
+                    <button class="btn btn-primary" onclick="showCreateWorkoutModal()">
+                        + Criar Treino
+                    </button>
+                </div>
+
+                <!-- Lista de Treinos -->
+                <div id="workoutsList" class="workouts-list">
+                    <!-- Treinos serão carregados aqui -->
+                </div>
+            </section>
+
+            <!-- Seção Plano Semanal -->
+            <section id="plano" class="section">
+                <div class="section-header">
+                    <h2>📅 Plano Semanal</h2>
+                    <button class="btn btn-primary" onclick="showAddPlanModal()">
+                        + Adicionar ao Plano
+                    </button>
+                </div>
+
+                <!-- Plano Semanal -->
+                <div id="weeklyPlan" class="weekly-plan">
+                    <!-- Plano será carregado aqui -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Adicionar Exercício -->
+    <div id="exerciseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Exercício</h3>
+                <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
+            </div>
+            <form id="exerciseForm" class="form">
+                <div class="form-group">
+                    <label for="exerciseName">Nome do Exercício</label>
+                    <input type="text" id="exerciseName" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseDescription">Descrição</label>
+                    <textarea id="exerciseDescription" class="textarea" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseMuscleGroup">Grupo Muscular</label>
+                    <select id="exerciseMuscleGroup" class="select" required>
+                        <option value="">Selecione...</option>
+                        <option value="Peito">Peito</option>
+                        <option value="Costas">Costas</option>
+                        <option value="Pernas">Pernas</option>
+                        <option value="Ombros">Ombros</option>
+                        <option value="Bíceps">Bíceps</option>
+                        <option value="Tríceps">Tríceps</option>
+                        <option value="Abdômen">Abdômen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseEquipment">Equipamento</label>
+                    <input type="text" id="exerciseEquipment" class="input">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('exerciseModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Criar Treino -->
+    <div id="workoutModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Criar Treino</h3>
+                <span class="close" onclick="closeModal('workoutModal')">&times;</span>
+            </div>
+            <form id="workoutForm" class="form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="workoutName">Nome do Treino</label>
+                        <input type="text" id="workoutName" class="input" placeholder="Ex: Treino A - Peito e Tríceps" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="workoutFocus">Foco</label>
+                        <select id="workoutFocus" class="select" required>
+                            <option value="">Selecione...</option>
+                            <option value="Hipertrofia">Hipertrofia</option>
+                            <option value="Força">Força</option>
+                            <option value="Resistência">Resistência</option>
+                            <option value="Definição">Definição</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="workoutDescription">Descrição</label>
+                    <textarea id="workoutDescription" class="textarea" rows="2"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Exercícios</label>
+                    <div class="exercise-selector">
+                        <select id="exerciseSelect" class="select">
+                            <option value="">Selecione um exercício...</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary" onclick="addExerciseToWorkout()">+ Adicionar</button>
+                    </div>
+                </div>
+
+                <div id="selectedExercises" class="selected-exercises">
+                    <!-- Exercícios selecionados aparecerão aqui -->
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('workoutModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar Treino</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar ao Plano -->
+    <div id="planModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar ao Plano Semanal</h3>
+                <span class="close" onclick="closeModal('planModal')">&times;</span>
+            </div>
+            <form id="planForm" class="form">
+                <div class="form-group">
+                    <label for="planWorkout">Treino</label>
+                    <select id="planWorkout" class="select" required>
+                        <option value="">Selecione um treino...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="planDay">Dia da Semana</label>
+                    <select id="planDay" class="select" required>
+                        <option value="Segunda">Segunda-feira</option>
+                        <option value="Terça">Terça-feira</option>
+                        <option value="Quarta">Quarta-feira</option>
+                        <option value="Quinta">Quinta-feira</option>
+                        <option value="Sexta">Sexta-feira</option>
+                        <option value="Sábado">Sábado</option>
+                        <option value="Domingo">Domingo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="planTime">Horário (opcional)</label>
+                    <input type="time" id="planTime" class="input">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('planModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

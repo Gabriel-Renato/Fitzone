@@ -69,6 +69,34 @@
         </div>
     </main>
 
+    <!-- Modal Ver Exercícios do Treino -->
+    <div id="workoutExercisesModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="workoutExercisesTitle">🏋️ Exercícios do Treino</h3>
+                <span class="close" onclick="closeModal('workoutExercisesModal')">&times;</span>
+            </div>
+            
+            <div class="workout-info-banner">
+                <div id="workoutInfoContent"></div>
+            </div>
+
+            <div id="exercisesChecklistContent" class="exercises-checklist">
+                <!-- Lista de exercícios será carregada aqui -->
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('workoutExercisesModal')">Fechar</button>
+                <button class="btn btn-primary" onclick="saveCheckIn()">
+                    💾 Salvar Check-in
+                </button>
+                <button class="btn btn-success" onclick="openCompleteWorkoutFromExercises()">
+                    ✅ Concluir Treino
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Marcar Treino como Concluído -->
     <div id="completeWorkoutModal" class="modal">
         <div class="modal-content">
@@ -80,6 +108,11 @@
                 <input type="hidden" id="workoutId">
                 <input type="hidden" id="workoutPlanId">
                 
+                <div class="completed-exercises-summary">
+                    <h4>Exercícios Realizados</h4>
+                    <div id="completedExercisesSummary"></div>
+                </div>
+
                 <div class="form-group">
                     <label for="duration">Duração (minutos)</label>
                     <input type="number" id="duration" class="input" min="1" placeholder="Ex: 60">

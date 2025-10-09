@@ -1,0 +1,17 @@
+{
+  "name": "fitzone-frontend",
+  "version": "1.0.0",
+  "description": "FitZone - Sistema de Gerenciamento de Treinos",
+  "scripts": {
+    "dev": "browser-sync start --server --files '**/*.html, **/*.css, **/*.js' --port 3000",
+    "dev:simple": "php -S localhost:3000",
+    "start": "npm run dev",
+    "install-deps": "npm install browser-sync --save-dev"
+  },
+  "keywords": ["fitzone", "fitness", "workout", "treinos"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^3.0.2"
+  }
+}

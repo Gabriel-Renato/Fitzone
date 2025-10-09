@@ -13,14 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Criar usuário padrão
-        User::factory()->create([
-            'name' => 'FitZone User',
-            'email' => 'user@fitzone.com',
-        ]);
-
-        // Popular exercícios
+        // Popular usuários (Personal e Clientes)
         $this->call([
+            UsersSeeder::class,
             ExerciseSeeder::class,
         ]);
     }

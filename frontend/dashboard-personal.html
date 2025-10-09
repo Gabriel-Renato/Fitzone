@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Personal - FitZone</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>💪 FitZone - Personal</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#clientes" class="nav-link active">Meus Clientes</a></li>
+                        <li><a href="#exercicios" class="nav-link">Exercícios</a></li>
+                        <li><a href="#treinos" class="nav-link">Treinos</a></li>
+                        <li><span id="userName" class="user-name"></span></li>
+                        <li><button onclick="logout()" class="btn btn-secondary btn-small">Sair</button></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Seção Clientes -->
+            <section id="clientes" class="section active">
+                <div class="section-header">
+                    <h2>👥 Meus Clientes</h2>
+                    <button class="btn btn-primary" onclick="showAddClientModal()">
+                        + Novo Cliente
+                    </button>
+                </div>
+
+                <div id="clientsList" class="grid">
+                    <!-- Clientes serão carregados aqui -->
+                </div>
+            </section>
+
+            <!-- Seção Exercícios -->
+            <section id="exercicios" class="section">
+                <div class="section-header">
+                    <h2>📋 Biblioteca de Exercícios</h2>
+                    <button class="btn btn-primary" onclick="showAddExerciseModal()">+ Novo Exercício</button>
+                </div>
+                <div class="filters">
+                    <input type="text" id="searchExercise" class="input" placeholder="🔍 Buscar exercício...">
+                    <select id="filterMuscleGroup" class="select">
+                        <option value="">Todos os Grupos</option>
+                    </select>
+                </div>
+                <div id="exercisesList" class="grid"></div>
+            </section>
+
+            <!-- Seção Treinos -->
+            <section id="treinos" class="section">
+                <div class="section-header">
+                    <h2>🏋️ Treinos</h2>
+                    <button class="btn btn-primary" onclick="showCreateWorkoutModal()">+ Criar Treino</button>
+                </div>
+                <div id="workoutsList" class="workouts-list"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Adicionar Cliente -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Cliente</h3>
+                <span class="close" onclick="closeModal('clientModal')">&times;</span>
+            </div>
+            <form id="clientForm" class="form">
+                <div class="form-group">
+                    <label for="clientName">Nome</label>
+                    <input type="text" id="clientName" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientEmail">E-mail</label>
+                    <input type="email" id="clientEmail" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientPassword">Senha</label>
+                    <input type="password" id="clientPassword" class="input" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="clientPhone">Telefone</label>
+                    <input type="tel" id="clientPhone" class="input">
+                </div>
+                <div class="form-group">
+                    <label for="clientGoals">Objetivos</label>
+                    <textarea id="clientGoals" class="textarea" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('clientModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ver Detalhes do Cliente -->
+    <div id="clientDetailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>👤 Detalhes do Cliente</h3>
+                <span class="close" onclick="closeModal('clientDetailsModal')">&times;</span>
+            </div>
+            
+            <div id="clientDetailsContent" class="client-details">
+                <!-- Conteúdo será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Atribuir Treino -->
+    <div id="assignWorkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Atribuir Treino ao Cliente</h3>
+                <span class="close" onclick="closeModal('assignWorkoutModal')">&times;</span>
+            </div>
+            <form id="assignWorkoutForm" class="form">
+                <input type="hidden" id="assignClientId">
+                
+                <div class="form-group">
+                    <label for="assignWorkoutSelect">Selecione o Treino</label>
+                    <select id="assignWorkoutSelect" class="select" required>
+                        <option value="">Escolha um treino...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="assignDayOfWeek">Dia da Semana</label>
+                    <select id="assignDayOfWeek" class="select" required>
+                        <option value="">Selecione o dia...</option>
+                        <option value="Segunda">Segunda-feira</option>
+                        <option value="Terça">Terça-feira</option>
+                        <option value="Quarta">Quarta-feira</option>
+                        <option value="Quinta">Quinta-feira</option>
+                        <option value="Sexta">Sexta-feira</option>
+                        <option value="Sábado">Sábado</option>
+                        <option value="Domingo">Domingo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="assignScheduledTime">Horário (opcional)</label>
+                    <input type="time" id="assignScheduledTime" class="input">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('assignWorkoutModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Atribuir Treino</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard-personal.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FitZone</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>💪 FitZone</h1>
+                <p>Sistema de Gerenciamento de Treinos</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" class="input" placeholder="seu@email.com" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" class="input" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Entrar
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Não tem uma conta? <a href="register.html">Cadastre-se</a></p>
+            </div>
+
+            <div class="demo-credentials">
+                <h4>👤 Credenciais de Demo</h4>
+                <div class="demo-users">
+                    <div class="demo-user">
+                        <strong>Personal Trainer:</strong>
+                        <p>personal@fitzone.com / password</p>
+                    </div>
+                    <div class="demo-user">
+                        <strong>Cliente:</strong>
+                        <p>joao@fitzone.com / password</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

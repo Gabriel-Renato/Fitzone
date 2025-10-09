@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cliente - FitZone</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>💪 FitZone - Meus Treinos</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#plano" class="nav-link active">Plano Semanal</a></li>
+                        <li><a href="#historico" class="nav-link">Histórico</a></li>
+                        <li><span id="userName" class="user-name"></span></li>
+                        <li><button onclick="logout()" class="btn btn-secondary btn-small">Sair</button></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏋️</div>
+                    <div class="stat-value" id="totalWorkouts">0</div>
+                    <div class="stat-label">Treinos Realizados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="thisWeek">0</div>
+                    <div class="stat-label">Esta Semana</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="avgRating">0</div>
+                    <div class="stat-label">Avaliação Média</div>
+                </div>
+            </div>
+
+            <!-- Plano Semanal -->
+            <section id="plano" class="section active">
+                <div class="section-header">
+                    <h2>📅 Meu Plano Semanal</h2>
+                </div>
+                <div id="weeklyPlan" class="weekly-plan">
+                    <!-- Plano será carregado aqui -->
+                </div>
+            </section>
+
+            <!-- Histórico -->
+            <section id="historico" class="section">
+                <div class="section-header">
+                    <h2>📊 Histórico de Treinos</h2>
+                </div>
+                <div id="historyList" class="history-list">
+                    <!-- Histórico será carregado aqui -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Marcar Treino como Concluído -->
+    <div id="completeWorkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✅ Marcar Treino como Concluído</h3>
+                <span class="close" onclick="closeModal('completeWorkoutModal')">&times;</span>
+            </div>
+            <form id="completeWorkoutForm" class="form">
+                <input type="hidden" id="workoutId">
+                <input type="hidden" id="workoutPlanId">
+                
+                <div class="form-group">
+                    <label for="duration">Duração (minutos)</label>
+                    <input type="number" id="duration" class="input" min="1" placeholder="Ex: 60">
+                </div>
+
+                <div class="form-group">
+                    <label for="rating">Avaliação do Treino</label>
+                    <div class="rating-stars">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="rating">
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Observações</label>
+                    <textarea id="notes" class="textarea" rows="3" placeholder="Como foi o treino?"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('completeWorkoutModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard-cliente.js"></script>
+</body>
+</html>

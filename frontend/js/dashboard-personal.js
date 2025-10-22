@@ -614,23 +614,40 @@ async function createExercise(exerciseData) {
 
 // Mostrar seletor de exercícios
 function showExerciseSelector() {
+    console.log('showExerciseSelector chamada');
     loadAllExercises().then(() => {
+        console.log('Exercícios carregados, renderizando seletor...');
         renderExerciseSelector();
         showModal('exerciseSelectorModal');
+    }).catch(error => {
+        console.error('Erro ao carregar exercícios:', error);
     });
 }
 
 // Renderizar lista de exercícios no seletor
 function renderExerciseSelector() {
+    console.log('renderExerciseSelector chamada');
     const container = document.getElementById('exerciseSelectorList');
+    
+    if (!container) {
+        console.error('Container exerciseSelectorList não encontrado');
+        return;
+    }
+    
     const searchTerm = document.getElementById('selectorSearchExercise').value.toLowerCase();
     const muscleGroup = document.getElementById('selectorFilterMuscleGroup').value;
+    
+    console.log('Total de exercícios disponíveis:', allExercises.length);
+    console.log('Termo de busca:', searchTerm);
+    console.log('Grupo muscular:', muscleGroup);
     
     let filteredExercises = allExercises.filter(exercise => {
         const matchesSearch = exercise.name.toLowerCase().includes(searchTerm);
         const matchesMuscle = !muscleGroup || exercise.muscle_group === muscleGroup;
         return matchesSearch && matchesMuscle;
     });
+    
+    console.log('Exercícios filtrados:', filteredExercises.length);
     
     container.innerHTML = filteredExercises.map(exercise => `
         <div class="exercise-selector-item">
@@ -649,7 +666,15 @@ function renderExerciseSelector() {
 
 // Atualizar exibição dos exercícios selecionados
 function updateSelectedExercisesDisplay() {
+    console.log('updateSelectedExercisesDisplay chamada');
     const container = document.getElementById('selectedExercises');
+    
+    if (!container) {
+        console.error('Container selectedExercises não encontrado');
+        return;
+    }
+    
+    console.log('Exercícios selecionados:', selectedExercisesForWorkout);
     
     if (selectedExercisesForWorkout.length === 0) {
         container.innerHTML = '<p class="text-muted">Nenhum exercício selecionado</p>';
@@ -657,6 +682,7 @@ function updateSelectedExercisesDisplay() {
     }
     
     const selectedExercises = allExercises.filter(ex => selectedExercisesForWorkout.includes(ex.id));
+    console.log('Exercícios encontrados para exibição:', selectedExercises.length);
     
     container.innerHTML = selectedExercises.map(exercise => `
         <div class="selected-exercise-item">
@@ -674,8 +700,13 @@ function removeExerciseFromWorkout(exerciseId) {
 
 // Confirmar seleção de exercícios
 function confirmExerciseSelection() {
+    console.log('confirmExerciseSelection chamada');
     const checkboxes = document.querySelectorAll('#exerciseSelectorList input[type="checkbox"]:checked');
+    console.log('Checkboxes selecionados:', checkboxes.length);
+    
     selectedExercisesForWorkout = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    console.log('IDs dos exercícios selecionados:', selectedExercisesForWorkout);
+    
     updateSelectedExercisesDisplay();
     closeModal('exerciseSelectorModal');
 }

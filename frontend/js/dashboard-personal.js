@@ -31,14 +31,14 @@ function waitForAuth() {
 async function checkAuthentication() {
     await waitForAuth();
     
-    if (!isAuthenticated()) {
-        window.location.href = 'login.html';
+if (!isAuthenticated()) {
+    window.location.href = 'login.html';
         return false;
-    }
+}
 
     const currentUser = getAuthUser();
     if (currentUser.role !== 'personal') {
-        window.location.href = 'dashboard-cliente.html';
+    window.location.href = 'dashboard-cliente.html';
         return false;
     }
     
@@ -572,14 +572,24 @@ window.showCreateWorkoutModal = showCreateWorkoutModal;
 // Carregar todos os exercícios para o seletor
 async function loadAllExercises() {
     try {
+        console.log('Carregando exercícios da API...');
         const response = await fetch(`${window.API_URL}/exercises`, {
             headers: getAuthHeaders()
         });
+        console.log('Resposta da API:', response.status);
+        
         const data = await response.json();
+        console.log('Dados recebidos:', data);
+        
         allExercises = data.data || [];
         console.log('Exercícios carregados para seletor:', allExercises.length);
+        console.log('Exercícios:', allExercises);
+        
+        return allExercises;
     } catch (error) {
         console.error('Erro ao carregar exercícios para seletor:', error);
+        allExercises = [];
+        return [];
     }
 }
 
@@ -634,10 +644,16 @@ function renderExerciseSelector() {
         return;
     }
     
-    const searchTerm = document.getElementById('selectorSearchExercise').value.toLowerCase();
-    const muscleGroup = document.getElementById('selectorFilterMuscleGroup').value;
+    console.log('Container encontrado:', container);
+    
+    const searchInput = document.getElementById('selectorSearchExercise');
+    const muscleGroupSelect = document.getElementById('selectorFilterMuscleGroup');
+    
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    const muscleGroup = muscleGroupSelect ? muscleGroupSelect.value : '';
     
     console.log('Total de exercícios disponíveis:', allExercises.length);
+    console.log('Exercícios:', allExercises);
     console.log('Termo de busca:', searchTerm);
     console.log('Grupo muscular:', muscleGroup);
     
@@ -648,20 +664,33 @@ function renderExerciseSelector() {
     });
     
     console.log('Exercícios filtrados:', filteredExercises.length);
+    console.log('Exercícios filtrados:', filteredExercises);
     
-    container.innerHTML = filteredExercises.map(exercise => `
-        <div class="exercise-selector-item">
-            <label class="exercise-checkbox">
-                <input type="checkbox" value="${exercise.id}" 
-                       ${selectedExercisesForWorkout.includes(exercise.id) ? 'checked' : ''}>
-                <div class="exercise-info">
-                    <h4>${exercise.name}</h4>
-                    <p class="muscle-group">${exercise.muscle_group}</p>
-                    ${exercise.description ? `<p class="description">${exercise.description}</p>` : ''}
-                </div>
-            </label>
-        </div>
-    `).join('');
+    if (filteredExercises.length === 0) {
+        container.innerHTML = '<p class="text-muted">Nenhum exercício encontrado</p>';
+        return;
+    }
+    
+    const html = filteredExercises.map(exercise => {
+        console.log('Renderizando exercício:', exercise);
+        return `
+            <div class="exercise-selector-item">
+                <label class="exercise-checkbox">
+                    <input type="checkbox" value="${exercise.id}" 
+                           ${selectedExercisesForWorkout.includes(exercise.id) ? 'checked' : ''}>
+                    <div class="exercise-info">
+                        <h4>${exercise.name}</h4>
+                        <p class="muscle-group">${exercise.muscle_group}</p>
+                        ${exercise.description ? `<p class="description">${exercise.description}</p>` : ''}
+                    </div>
+                </label>
+            </div>
+        `;
+    }).join('');
+    
+    console.log('HTML gerado:', html);
+    container.innerHTML = html;
+    console.log('HTML inserido no container');
 }
 
 // Atualizar exibição dos exercícios selecionados

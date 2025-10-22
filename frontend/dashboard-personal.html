@@ -166,51 +166,81 @@
 
     <!-- Modal Adicionar Exercício -->
     <div id="exerciseModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content exercise-modal">
             <div class="modal-header">
-                <h3>+ Novo Exercício</h3>
+                <h3>🏋️ Novo Exercício</h3>
                 <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
             </div>
-            <form id="exerciseForm">
-                <div class="form-group">
-                    <label for="exerciseName">Nome do Exercício *</label>
-                    <input type="text" id="exerciseName" class="input" required>
+            
+            <form id="exerciseForm" class="exercise-form">
+                <!-- Informações Básicas -->
+                <div class="form-section">
+                    <h4 class="section-title">📝 Informações Básicas</h4>
+                    
+                    <div class="form-group">
+                        <label for="exerciseName" class="form-label">
+                            Nome do Exercício <span class="required">*</span>
+                        </label>
+                        <input type="text" id="exerciseName" class="input" required 
+                               placeholder="Ex: Supino Reto, Agachamento, Flexão...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exerciseMuscleGroup" class="form-label">
+                            Grupo Muscular <span class="required">*</span>
+                        </label>
+                        <select id="exerciseMuscleGroup" class="select" required>
+                            <option value="">Selecione o grupo muscular</option>
+                            <option value="Peito">💪 Peito</option>
+                            <option value="Costas">🦾 Costas</option>
+                            <option value="Ombros">🤸 Ombros</option>
+                            <option value="Bíceps">💪 Bíceps</option>
+                            <option value="Tríceps">💪 Tríceps</option>
+                            <option value="Pernas">🦵 Pernas</option>
+                            <option value="Glúteos">🍑 Glúteos</option>
+                            <option value="Abdômen">🫁 Abdômen</option>
+                            <option value="Cardio">❤️ Cardio</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="exerciseDescription">Descrição</label>
-                    <textarea id="exerciseDescription" class="input" rows="3" placeholder="Descreva como executar o exercício..."></textarea>
-                </div>
+                <!-- Detalhes Adicionais -->
+                <div class="form-section">
+                    <h4 class="section-title">📋 Detalhes Adicionais</h4>
+                    
+                    <div class="form-group">
+                        <label for="exerciseDescription" class="form-label">
+                            Como Executar
+                        </label>
+                        <textarea id="exerciseDescription" class="input textarea" rows="4" 
+                                  placeholder="Descreva passo a passo como executar o exercício..."></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="exerciseMuscleGroup">Grupo Muscular *</label>
-                    <select id="exerciseMuscleGroup" class="select" required>
-                        <option value="">Selecione um grupo</option>
-                        <option value="Peito">Peito</option>
-                        <option value="Costas">Costas</option>
-                        <option value="Ombros">Ombros</option>
-                        <option value="Bíceps">Bíceps</option>
-                        <option value="Tríceps">Tríceps</option>
-                        <option value="Pernas">Pernas</option>
-                        <option value="Glúteos">Glúteos</option>
-                        <option value="Abdômen">Abdômen</option>
-                        <option value="Cardio">Cardio</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="exerciseEquipment" class="form-label">
+                            Equipamento Necessário
+                        </label>
+                        <input type="text" id="exerciseEquipment" class="input" 
+                               placeholder="Ex: Barra, Halteres, Máquina, Peso corporal...">
+                    </div>
 
-                <div class="form-group">
-                    <label for="exerciseEquipment">Equipamento</label>
-                    <input type="text" id="exerciseEquipment" class="input" placeholder="Ex: Barra, Halteres, Máquina...">
-                </div>
-
-                <div class="form-group">
-                    <label for="exerciseVideoUrl">URL do Vídeo (opcional)</label>
-                    <input type="url" id="exerciseVideoUrl" class="input" placeholder="https://...">
+                    <div class="form-group">
+                        <label for="exerciseVideoUrl" class="form-label">
+                            Link do Vídeo (opcional)
+                        </label>
+                        <input type="url" id="exerciseVideoUrl" class="input" 
+                               placeholder="https://youtube.com/watch?v=...">
+                        <small class="form-hint">Cole aqui um link do YouTube ou outro vídeo demonstrativo</small>
+                    </div>
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('exerciseModal')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Criar Exercício</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('exerciseModal')">
+                        ❌ Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        ✅ Criar Exercício
+                    </button>
                 </div>
             </form>
         </div>

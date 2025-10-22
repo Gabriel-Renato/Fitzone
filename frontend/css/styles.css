@@ -1395,6 +1395,154 @@ body {
 
 /* ==================== ESTILOS PARA EXERCÍCIOS E TREINOS ==================== */
 
+/* Modal de Exercício Melhorado */
+.exercise-modal {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.exercise-form {
+    padding: 0;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: 12px;
+    border: 1px solid var(--gray-light);
+}
+
+.form-section:last-of-type {
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.required {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.form-hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* Melhorar aparência dos selects */
+.exercise-form .select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+/* Estilo dos botões do modal de exercício */
+.exercise-form .form-actions {
+    padding: 1.5rem;
+    background: var(--white);
+    border-top: 1px solid var(--gray-light);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.exercise-form .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.exercise-form .btn-primary {
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: var(--white);
+}
+
+.exercise-form .btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(60, 115, 51, 0.3);
+}
+
+.exercise-form .btn-secondary {
+    background: var(--white);
+    border: 1px solid var(--gray-light);
+    color: var(--gray);
+}
+
+.exercise-form .btn-secondary:hover {
+    background: var(--gray-light);
+    border-color: var(--gray);
+}
+
+/* Melhorar foco dos inputs */
+.exercise-form .input:focus,
+.exercise-form .select:focus,
+.exercise-form .textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(60, 115, 51, 0.1);
+}
+
+/* Responsividade do modal de exercício */
+@media (max-width: 768px) {
+    .exercise-modal {
+        max-width: 95vw;
+        margin: 1rem;
+    }
+    
+    .form-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .exercise-form .form-actions {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .exercise-form .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 /* Seletor de exercícios */
 .exercise-selector {
     max-height: 60vh;

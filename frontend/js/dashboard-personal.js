@@ -561,6 +561,8 @@ function showCreateWorkoutModal() {
     document.getElementById('workoutForm').reset();
     selectedExercisesForWorkout = [];
     updateSelectedExercisesDisplay();
+    updateDropdownText();
+    closeExerciseDropdown(); // Garantir que o dropdown está fechado
     showModal('workoutModal');
 }
 
@@ -622,7 +624,7 @@ async function createExercise(exerciseData) {
 
 // ==================== FUNCIONALIDADES DE TREINOS ====================
 
-// Mostrar seletor de exercícios
+// Mostrar seletor de exercícios (mantido para compatibilidade)
 function showExerciseSelector() {
     console.log('showExerciseSelector chamada');
     loadAllExercises().then(() => {
@@ -632,6 +634,119 @@ function showExerciseSelector() {
     }).catch(error => {
         console.error('Erro ao carregar exercícios:', error);
     });
+}
+
+// ==================== FUNCIONALIDADES DO DROPDOWN ====================
+
+// Alternar dropdown de exercícios
+function toggleExerciseDropdown() {
+    const dropdown = document.querySelector('.exercise-dropdown');
+    const isOpen = dropdown.classList.contains('open');
+    
+    if (isOpen) {
+        closeExerciseDropdown();
+    } else {
+        openExerciseDropdown();
+    }
+}
+
+// Abrir dropdown de exercícios
+function openExerciseDropdown() {
+    const dropdown = document.querySelector('.exercise-dropdown');
+    dropdown.classList.add('open');
+    
+    // Carregar exercícios se ainda não foram carregados
+    if (allExercises.length === 0) {
+        loadAllExercises().then(() => {
+            renderExerciseDropdown();
+        });
+    } else {
+        renderExerciseDropdown();
+    }
+}
+
+// Fechar dropdown de exercícios
+function closeExerciseDropdown() {
+    const dropdown = document.querySelector('.exercise-dropdown');
+    dropdown.classList.remove('open');
+}
+
+// Renderizar exercícios no dropdown
+function renderExerciseDropdown() {
+    const container = document.getElementById('exerciseDropdownList');
+    
+    if (!container) {
+        console.error('Container exerciseDropdownList não encontrado');
+        return;
+    }
+    
+    console.log('Renderizando dropdown com', allExercises.length, 'exercícios');
+    
+    if (allExercises.length === 0) {
+        container.innerHTML = '<div class="exercise-dropdown-item"><p class="text-muted">Nenhum exercício disponível</p></div>';
+        return;
+    }
+    
+    container.innerHTML = allExercises.map(exercise => `
+        <div class="exercise-dropdown-item" onclick="toggleExerciseSelection(${exercise.id})">
+            <input type="checkbox" id="exercise-${exercise.id}" value="${exercise.id}" 
+                   ${selectedExercisesForWorkout.includes(exercise.id) ? 'checked' : ''}>
+            <div class="exercise-dropdown-item-info">
+                <h5>${exercise.name}</h5>
+                <p class="muscle-group">${exercise.muscle_group}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Alternar seleção de exercício
+function toggleExerciseSelection(exerciseId) {
+    const checkbox = document.getElementById(`exercise-${exerciseId}`);
+    const isChecked = checkbox.checked;
+    
+    if (isChecked) {
+        // Adicionar exercício
+        if (!selectedExercisesForWorkout.includes(exerciseId)) {
+            selectedExercisesForWorkout.push(exerciseId);
+        }
+    } else {
+        // Remover exercício
+        selectedExercisesForWorkout = selectedExercisesForWorkout.filter(id => id !== exerciseId);
+    }
+    
+    updateSelectedExercisesDisplay();
+    updateDropdownText();
+}
+
+// Filtrar exercícios no dropdown
+function filterExercises() {
+    const searchTerm = document.getElementById('exerciseSearchInput').value.toLowerCase();
+    const items = document.querySelectorAll('.exercise-dropdown-item');
+    
+    items.forEach(item => {
+        const exerciseName = item.querySelector('h5').textContent.toLowerCase();
+        const muscleGroup = item.querySelector('.muscle-group').textContent.toLowerCase();
+        
+        if (exerciseName.includes(searchTerm) || muscleGroup.includes(searchTerm)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Atualizar texto do dropdown
+function updateDropdownText() {
+    const textElement = document.getElementById('exerciseDropdownText');
+    
+    if (selectedExercisesForWorkout.length === 0) {
+        textElement.textContent = 'Selecionar exercícios...';
+    } else if (selectedExercisesForWorkout.length === 1) {
+        const exercise = allExercises.find(ex => ex.id === selectedExercisesForWorkout[0]);
+        textElement.textContent = exercise ? exercise.name : '1 exercício selecionado';
+    } else {
+        textElement.textContent = `${selectedExercisesForWorkout.length} exercícios selecionados`;
+    }
 }
 
 // Renderizar lista de exercícios no seletor
@@ -782,4 +897,9 @@ function showError(message) {
 window.showExerciseSelector = showExerciseSelector;
 window.confirmExerciseSelection = confirmExerciseSelection;
 window.removeExerciseFromWorkout = removeExerciseFromWorkout;
+
+// Expor funções do dropdown
+window.toggleExerciseDropdown = toggleExerciseDropdown;
+window.toggleExerciseSelection = toggleExerciseSelection;
+window.filterExercises = filterExercises;
 

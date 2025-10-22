@@ -280,10 +280,29 @@
 
                 <div class="form-group">
                     <label for="workoutExercises">Exercícios *</label>
+                    
+                    <!-- Dropdown de Seleção de Exercícios -->
+                    <div class="exercise-dropdown-container">
+                        <div class="exercise-dropdown">
+                            <button type="button" class="exercise-dropdown-toggle" onclick="toggleExerciseDropdown()">
+                                <span id="exerciseDropdownText">Selecionar exercícios...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div id="exerciseDropdownMenu" class="exercise-dropdown-menu">
+                                <div class="exercise-search">
+                                    <input type="text" id="exerciseSearchInput" class="input" placeholder="🔍 Buscar exercício..." onkeyup="filterExercises()">
+                                </div>
+                                <div class="exercise-list" id="exerciseDropdownList">
+                                    <!-- Exercícios serão carregados aqui -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Exercícios Selecionados -->
                     <div id="selectedExercises" class="selected-exercises">
                         <p class="text-muted">Nenhum exercício selecionado</p>
                     </div>
-                    <button type="button" class="btn btn-secondary" onclick="showExerciseSelector()">+ Adicionar Exercícios</button>
                 </div>
 
                 <div class="form-actions">

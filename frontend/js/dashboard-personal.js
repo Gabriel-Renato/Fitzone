@@ -6,9 +6,19 @@ if (typeof window.API_URL === 'undefined') {
 // Aguardar carregamento das funções de autenticação
 function waitForAuth() {
     return new Promise((resolve) => {
+        let attempts = 0;
+        const maxAttempts = 100; // 1 segundo máximo
+        
         const checkAuth = () => {
+            attempts++;
+            console.log(`Tentativa ${attempts}: verificando funções de auth...`);
+            
             if (typeof isAuthenticated === 'function' && typeof getAuthUser === 'function') {
+                console.log('Funções de autenticação carregadas com sucesso');
                 resolve();
+            } else if (attempts >= maxAttempts) {
+                console.error('Timeout: funções de autenticação não carregaram');
+                resolve(); // Resolve mesmo assim para não travar
             } else {
                 setTimeout(checkAuth, 10);
             }
@@ -47,6 +57,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!isAuth) return;
     
     user = getAuthUser();
+    console.log('User loaded:', user); // Debug log
+    
+    if (!user) {
+        console.error('Usuário não encontrado');
+        window.location.href = 'login.html';
+        return;
+    }
+    
     document.getElementById('userName').textContent = user.name;
     initializeApp();
     setupNavigation();
@@ -248,6 +266,13 @@ function renderExercises() {
 
 async function loadWorkouts() {
     try {
+        if (!user || !user.id) {
+            console.error('Usuário não definido ou sem ID');
+            return;
+        }
+        
+        console.log('Carregando treinos para user ID:', user.id); // Debug log
+        
         const response = await fetch(`${window.API_URL}/workouts?user_id=${user.id}`, {
             headers: getAuthHeaders()
         });

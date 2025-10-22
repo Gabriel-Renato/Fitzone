@@ -1,14 +1,36 @@
 // Configuração da API
 const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
 
-// Verificar autenticação
-if (!isAuthenticated()) {
-    window.location.href = 'login.html';
+// Aguardar carregamento das funções de autenticação
+function waitForAuth() {
+    return new Promise((resolve) => {
+        const checkAuth = () => {
+            if (typeof isAuthenticated === 'function' && typeof getAuthUser === 'function') {
+                resolve();
+            } else {
+                setTimeout(checkAuth, 10);
+            }
+        };
+        checkAuth();
+    });
 }
 
-const user = getAuthUser();
-if (user.role !== 'personal') {
-    window.location.href = 'dashboard-cliente.html';
+// Verificar autenticação após carregamento
+async function checkAuthentication() {
+    await waitForAuth();
+    
+    if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return false;
+    }
+
+    const user = getAuthUser();
+    if (user.role !== 'personal') {
+        window.location.href = 'dashboard-cliente.html';
+        return false;
+    }
+    
+    return true;
 }
 
 // Estado
@@ -17,7 +39,11 @@ let exercises = [];
 let workouts = [];
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const isAuth = await checkAuthentication();
+    if (!isAuth) return;
+    
+    const user = getAuthUser();
     document.getElementById('userName').textContent = user.name;
     initializeApp();
     setupNavigation();
@@ -106,6 +132,7 @@ function showAddClientModal() {
     document.getElementById('clientForm').reset();
     showModal('clientModal');
 }
+
 
 function setupForms() {
     // Form de criar cliente
@@ -434,3 +461,10 @@ function showAddExerciseModal() {
 function showCreateWorkoutModal() {
     alert('Criar treino - Use a tela original de treinos');
 }
+
+// Expor todas as funções necessárias globalmente
+window.showAddClientModal = showAddClientModal;
+window.showAddExerciseModal = showAddExerciseModal;
+window.showCreateWorkoutModal = showCreateWorkoutModal;
+window.showModal = showModal;
+window.closeModal = closeModal;

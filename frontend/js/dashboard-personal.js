@@ -272,13 +272,23 @@ function setupForms() {
             return;
         }
         
+        // Preparar exercícios com estrutura esperada pela API
+        const exercises = selectedExercisesForWorkout.map((exerciseId, index) => ({
+            exercise_id: exerciseId,
+            order: index + 1,
+            sets: 3, // Valor padrão
+            reps: "8-12", // Valor padrão
+            weight: null,
+            rest_time: 60, // Valor padrão
+            notes: null
+        }));
+        
         const data = {
+            user_id: user.id,
             name: document.getElementById('workoutName').value,
             description: document.getElementById('workoutDescription').value,
-            difficulty: document.getElementById('workoutDifficulty').value,
-            duration: parseInt(document.getElementById('workoutDuration').value) || 60,
-            exercise_ids: selectedExercisesForWorkout,
-            personal_id: user.id
+            focus: document.getElementById('workoutDifficulty').value,
+            exercises: exercises
         };
 
         showLoading();
@@ -858,13 +868,17 @@ function confirmExerciseSelection() {
 // Criar novo treino
 async function createWorkout(workoutData) {
     try {
+        console.log('Dados do treino sendo enviados:', workoutData);
+        
         const response = await fetch(`${window.API_URL}/workouts`, {
             method: 'POST',
             headers: getAuthHeaders(),
             body: JSON.stringify(workoutData)
         });
         
+        console.log('Resposta da API:', response.status);
         const data = await response.json();
+        console.log('Dados da resposta:', data);
         
         if (data.success) {
             console.log('Treino criado com sucesso:', data.data);
@@ -873,7 +887,13 @@ async function createWorkout(workoutData) {
             closeModal('workoutModal');
             showSuccess('Treino criado com sucesso!');
         } else {
-            showError(data.message || 'Erro ao criar treino');
+            console.error('Erro na API:', data);
+            if (data.errors) {
+                console.error('Erros de validação:', data.errors);
+                showError('Erro de validação: ' + JSON.stringify(data.errors));
+            } else {
+                showError(data.message || 'Erro ao criar treino');
+            }
         }
     } catch (error) {
         console.error('Erro ao criar treino:', error);

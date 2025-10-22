@@ -50,6 +50,8 @@ let clients = [];
 let exercises = [];
 let workouts = [];
 let user = null;
+let selectedExercisesForWorkout = [];
+let allExercises = []; // Para o seletor de exercícios
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
@@ -237,6 +239,62 @@ function setupForms() {
             hideLoading();
         }
     });
+
+    // Form de criar exercício
+    document.getElementById('exerciseForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            name: document.getElementById('exerciseName').value,
+            description: document.getElementById('exerciseDescription').value,
+            muscle_group: document.getElementById('exerciseMuscleGroup').value,
+            equipment: document.getElementById('exerciseEquipment').value,
+            video_url: document.getElementById('exerciseVideoUrl').value,
+        };
+
+        showLoading();
+        try {
+            await createExercise(data);
+        } catch (error) {
+            showError('Erro ao criar exercício');
+            console.error(error);
+        } finally {
+            hideLoading();
+        }
+    });
+
+    // Form de criar treino
+    document.getElementById('workoutForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (selectedExercisesForWorkout.length === 0) {
+            showError('Selecione pelo menos um exercício');
+            return;
+        }
+        
+        const data = {
+            name: document.getElementById('workoutName').value,
+            description: document.getElementById('workoutDescription').value,
+            difficulty: document.getElementById('workoutDifficulty').value,
+            duration: parseInt(document.getElementById('workoutDuration').value) || 60,
+            exercise_ids: selectedExercisesForWorkout,
+            personal_id: user.id
+        };
+
+        showLoading();
+        try {
+            await createWorkout(data);
+        } catch (error) {
+            showError('Erro ao criar treino');
+            console.error(error);
+        } finally {
+            hideLoading();
+        }
+    });
+
+    // Filtros do seletor de exercícios
+    document.getElementById('selectorSearchExercise').addEventListener('input', renderExerciseSelector);
+    document.getElementById('selectorFilterMuscleGroup').addEventListener('change', renderExerciseSelector);
 }
 
 // Carregar exercícios e treinos (reutilizar lógica do app.js original)
@@ -492,16 +550,176 @@ function closeModal(modalId) {
 window.closeModal = closeModal;
 
 function showAddExerciseModal() {
-    alert('Adicionar exercício - Use a tela original de exercícios');
+    document.getElementById('exerciseForm').reset();
+    showModal('exerciseModal');
 }
 
 // Expor função imediatamente
 window.showAddExerciseModal = showAddExerciseModal;
 
 function showCreateWorkoutModal() {
-    alert('Criar treino - Use a tela original de treinos');
+    document.getElementById('workoutForm').reset();
+    selectedExercisesForWorkout = [];
+    updateSelectedExercisesDisplay();
+    showModal('workoutModal');
 }
 
 // Expor função imediatamente
 window.showCreateWorkoutModal = showCreateWorkoutModal;
+
+// ==================== FUNCIONALIDADES DE EXERCÍCIOS ====================
+
+// Carregar todos os exercícios para o seletor
+async function loadAllExercises() {
+    try {
+        const response = await fetch(`${window.API_URL}/exercises`, {
+            headers: getAuthHeaders()
+        });
+        const data = await response.json();
+        allExercises = data.data || [];
+        console.log('Exercícios carregados para seletor:', allExercises.length);
+    } catch (error) {
+        console.error('Erro ao carregar exercícios para seletor:', error);
+    }
+}
+
+// Criar novo exercício
+async function createExercise(exerciseData) {
+    try {
+        const response = await fetch(`${window.API_URL}/exercises`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(exerciseData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Exercício criado com sucesso:', data.data);
+            // Recarregar lista de exercícios
+            await loadExercises();
+            await loadAllExercises(); // Recarregar para o seletor
+            closeModal('exerciseModal');
+            showSuccess('Exercício criado com sucesso!');
+        } else {
+            showError(data.message || 'Erro ao criar exercício');
+        }
+    } catch (error) {
+        console.error('Erro ao criar exercício:', error);
+        showError('Erro ao criar exercício');
+    }
+}
+
+// ==================== FUNCIONALIDADES DE TREINOS ====================
+
+// Mostrar seletor de exercícios
+function showExerciseSelector() {
+    loadAllExercises().then(() => {
+        renderExerciseSelector();
+        showModal('exerciseSelectorModal');
+    });
+}
+
+// Renderizar lista de exercícios no seletor
+function renderExerciseSelector() {
+    const container = document.getElementById('exerciseSelectorList');
+    const searchTerm = document.getElementById('selectorSearchExercise').value.toLowerCase();
+    const muscleGroup = document.getElementById('selectorFilterMuscleGroup').value;
+    
+    let filteredExercises = allExercises.filter(exercise => {
+        const matchesSearch = exercise.name.toLowerCase().includes(searchTerm);
+        const matchesMuscle = !muscleGroup || exercise.muscle_group === muscleGroup;
+        return matchesSearch && matchesMuscle;
+    });
+    
+    container.innerHTML = filteredExercises.map(exercise => `
+        <div class="exercise-selector-item">
+            <label class="exercise-checkbox">
+                <input type="checkbox" value="${exercise.id}" 
+                       ${selectedExercisesForWorkout.includes(exercise.id) ? 'checked' : ''}>
+                <div class="exercise-info">
+                    <h4>${exercise.name}</h4>
+                    <p class="muscle-group">${exercise.muscle_group}</p>
+                    ${exercise.description ? `<p class="description">${exercise.description}</p>` : ''}
+                </div>
+            </label>
+        </div>
+    `).join('');
+}
+
+// Atualizar exibição dos exercícios selecionados
+function updateSelectedExercisesDisplay() {
+    const container = document.getElementById('selectedExercises');
+    
+    if (selectedExercisesForWorkout.length === 0) {
+        container.innerHTML = '<p class="text-muted">Nenhum exercício selecionado</p>';
+        return;
+    }
+    
+    const selectedExercises = allExercises.filter(ex => selectedExercisesForWorkout.includes(ex.id));
+    
+    container.innerHTML = selectedExercises.map(exercise => `
+        <div class="selected-exercise-item">
+            <span>${exercise.name} (${exercise.muscle_group})</span>
+            <button type="button" class="btn-remove" onclick="removeExerciseFromWorkout(${exercise.id})">×</button>
+        </div>
+    `).join('');
+}
+
+// Remover exercício do treino
+function removeExerciseFromWorkout(exerciseId) {
+    selectedExercisesForWorkout = selectedExercisesForWorkout.filter(id => id !== exerciseId);
+    updateSelectedExercisesDisplay();
+}
+
+// Confirmar seleção de exercícios
+function confirmExerciseSelection() {
+    const checkboxes = document.querySelectorAll('#exerciseSelectorList input[type="checkbox"]:checked');
+    selectedExercisesForWorkout = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    updateSelectedExercisesDisplay();
+    closeModal('exerciseSelectorModal');
+}
+
+// Criar novo treino
+async function createWorkout(workoutData) {
+    try {
+        const response = await fetch(`${window.API_URL}/workouts`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(workoutData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Treino criado com sucesso:', data.data);
+            // Recarregar lista de treinos
+            await loadWorkouts();
+            closeModal('workoutModal');
+            showSuccess('Treino criado com sucesso!');
+        } else {
+            showError(data.message || 'Erro ao criar treino');
+        }
+    } catch (error) {
+        console.error('Erro ao criar treino:', error);
+        showError('Erro ao criar treino');
+    }
+}
+
+// ==================== FUNÇÕES DE UTILIDADE ====================
+
+function showSuccess(message) {
+    // Implementar notificação de sucesso
+    alert('✅ ' + message);
+}
+
+function showError(message) {
+    // Implementar notificação de erro
+    alert('❌ ' + message);
+}
+
+// Expor funções globalmente
+window.showExerciseSelector = showExerciseSelector;
+window.confirmExerciseSelection = confirmExerciseSelection;
+window.removeExerciseFromWorkout = removeExerciseFromWorkout;
 

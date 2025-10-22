@@ -164,6 +164,138 @@
         </div>
     </div>
 
+    <!-- Modal Adicionar Exercício -->
+    <div id="exerciseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>+ Novo Exercício</h3>
+                <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
+            </div>
+            <form id="exerciseForm">
+                <div class="form-group">
+                    <label for="exerciseName">Nome do Exercício *</label>
+                    <input type="text" id="exerciseName" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="exerciseDescription">Descrição</label>
+                    <textarea id="exerciseDescription" class="input" rows="3" placeholder="Descreva como executar o exercício..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="exerciseMuscleGroup">Grupo Muscular *</label>
+                    <select id="exerciseMuscleGroup" class="select" required>
+                        <option value="">Selecione um grupo</option>
+                        <option value="Peito">Peito</option>
+                        <option value="Costas">Costas</option>
+                        <option value="Ombros">Ombros</option>
+                        <option value="Bíceps">Bíceps</option>
+                        <option value="Tríceps">Tríceps</option>
+                        <option value="Pernas">Pernas</option>
+                        <option value="Glúteos">Glúteos</option>
+                        <option value="Abdômen">Abdômen</option>
+                        <option value="Cardio">Cardio</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="exerciseEquipment">Equipamento</label>
+                    <input type="text" id="exerciseEquipment" class="input" placeholder="Ex: Barra, Halteres, Máquina...">
+                </div>
+
+                <div class="form-group">
+                    <label for="exerciseVideoUrl">URL do Vídeo (opcional)</label>
+                    <input type="url" id="exerciseVideoUrl" class="input" placeholder="https://...">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('exerciseModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar Exercício</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Criar Treino -->
+    <div id="workoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>+ Criar Treino</h3>
+                <span class="close" onclick="closeModal('workoutModal')">&times;</span>
+            </div>
+            <form id="workoutForm">
+                <div class="form-group">
+                    <label for="workoutName">Nome do Treino *</label>
+                    <input type="text" id="workoutName" class="input" required placeholder="Ex: Treino A - Peito e Tríceps">
+                </div>
+
+                <div class="form-group">
+                    <label for="workoutDescription">Descrição</label>
+                    <textarea id="workoutDescription" class="input" rows="3" placeholder="Descreva o objetivo do treino..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="workoutDifficulty">Dificuldade</label>
+                    <select id="workoutDifficulty" class="select">
+                        <option value="Iniciante">Iniciante</option>
+                        <option value="Intermediário">Intermediário</option>
+                        <option value="Avançado">Avançado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="workoutDuration">Duração Estimada (minutos)</label>
+                    <input type="number" id="workoutDuration" class="input" min="10" max="180" placeholder="60">
+                </div>
+
+                <div class="form-group">
+                    <label for="workoutExercises">Exercícios *</label>
+                    <div id="selectedExercises" class="selected-exercises">
+                        <p class="text-muted">Nenhum exercício selecionado</p>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="showExerciseSelector()">+ Adicionar Exercícios</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('workoutModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar Treino</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Selecionar Exercícios -->
+    <div id="exerciseSelectorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Selecionar Exercícios</h3>
+                <span class="close" onclick="closeModal('exerciseSelectorModal')">&times;</span>
+            </div>
+            <div class="exercise-selector">
+                <div class="filters">
+                    <input type="text" id="selectorSearchExercise" class="input" placeholder="🔍 Buscar exercício...">
+                    <select id="selectorFilterMuscleGroup" class="select">
+                        <option value="">Todos os Grupos</option>
+                        <option value="Peito">Peito</option>
+                        <option value="Costas">Costas</option>
+                        <option value="Ombros">Ombros</option>
+                        <option value="Bíceps">Bíceps</option>
+                        <option value="Tríceps">Tríceps</option>
+                        <option value="Pernas">Pernas</option>
+                        <option value="Glúteos">Glúteos</option>
+                        <option value="Abdômen">Abdômen</option>
+                        <option value="Cardio">Cardio</option>
+                    </select>
+                </div>
+                <div id="exerciseSelectorList" class="exercise-selector-list"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('exerciseSelectorModal')">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmExerciseSelection()">Confirmar Seleção</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="loading" class="loading">
         <div class="spinner"></div>
     </div>

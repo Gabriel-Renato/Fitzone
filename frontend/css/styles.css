@@ -6,12 +6,12 @@
 }
 
 :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary-color: #8b5cf6;
-    --success-color: #10b981;
-    --danger-color: #ef4444;
-    --warning-color: #f59e0b;
+    --primary-color: #3c7333;
+    --primary-dark: #1a5013;
+    --secondary-color: #5e9553;
+    --success-color: #a3da93;
+    --danger-color: #71443f;
+    --warning-color: #8c7c62;
     --dark: #1f2937;
     --dark-light: #374151;
     --gray: #6b7280;
@@ -1391,4 +1391,144 @@ body {
 
 .day-card.clickable:has(.checkin-progress-badge) {
     border-left-color: var(--success-color);
+}
+
+/* ==================== ESTILOS PARA EXERCÍCIOS E TREINOS ==================== */
+
+/* Seletor de exercícios */
+.exercise-selector {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.exercise-selector-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 1rem 0;
+}
+
+.exercise-selector-item {
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.exercise-selector-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
+}
+
+.exercise-checkbox {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    cursor: pointer;
+    margin: 0;
+}
+
+.exercise-checkbox input[type="checkbox"] {
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+    transform: scale(1.2);
+}
+
+.exercise-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.exercise-info .muscle-group {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.exercise-info .description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--gray);
+    line-height: 1.4;
+}
+
+/* Exercícios selecionados */
+.selected-exercises {
+    min-height: 60px;
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    padding: 0.75rem;
+    background: var(--bg);
+}
+
+.selected-exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--white);
+    border: 1px solid var(--gray-light);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.selected-exercise-item:last-child {
+    margin-bottom: 0;
+}
+
+.btn-remove {
+    background: var(--danger-color);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+/* Filtros do seletor */
+.exercise-selector .filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.exercise-selector .filters .input,
+.exercise-selector .filters .select {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .exercise-selector .filters {
+        flex-direction: column;
+    }
+    
+    .exercise-selector .filters .input,
+    .exercise-selector .filters .select {
+        min-width: 100%;
+    }
+    
+    .exercise-checkbox {
+        padding: 0.75rem;
+    }
+    
+    .exercise-info h4 {
+        font-size: 0.9rem;
+    }
 }

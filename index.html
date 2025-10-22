@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitZone - Redirecionando...</title>
+    <link rel="icon" type="image/svg+xml" href="frontend/favicon.ico">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .redirect-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .loading {
+            margin: 1rem 0;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        .manual-link {
+            margin-top: 1rem;
+        }
+        .manual-link a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .manual-link a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="logo">💪 FitZone</div>
+        <div class="loading">
+            <div class="spinner"></div>
+        </div>
+        <div class="message">Redirecionando para o sistema...</div>
+        <div class="manual-link">
+            <a href="frontend/login.html">Clique aqui se não for redirecionado automaticamente</a>
+        </div>
+    </div>
+
+    <script>
+        // Redirecionar automaticamente após 2 segundos
+        setTimeout(() => {
+            window.location.href = 'frontend/login.html';
+        }, 2000);
+    </script>
+</body>
+</html>

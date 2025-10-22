@@ -1,5 +1,5 @@
 // Configuração da API
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
 const USER_ID = 1; // Temporário até implementar autenticação
 
 // Estado da aplicação

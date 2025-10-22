@@ -1,3 +1,6 @@
+// Configuração da API
+const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+
 // Verificar autenticação
 if (!isAuthenticated()) {
     window.location.href = 'login.html';

@@ -22,13 +22,15 @@ return [
     'allowed_origins' => [
         'http://localhost:3000',
         'http://localhost:5173',
-        'https://your-frontend-domain.vercel.app',
+        'https://fitzone-frontend.vercel.app',
+        'https://fitzone-frontend-git-main-gabrielrenatosouzadearaujo-9864.vercel.app',
         // Adicione aqui o domínio do seu frontend
     ],
 
     'allowed_origins_patterns' => [
         '/^https:\/\/.*\.vercel\.app$/',
         '/^https:\/\/.*\.netlify\.app$/',
+        '/^https:\/\/.*\.railway\.app$/',
     ],
 
     'allowed_headers' => ['*'],

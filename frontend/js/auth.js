@@ -1,5 +1,5 @@
 // Configuração da API
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
 
 // Verificar se já está logado
 document.addEventListener('DOMContentLoaded', () => {

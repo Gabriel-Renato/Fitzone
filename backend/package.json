@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "vercel-build": "composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache",
+        "vercel-dev": "composer install && php artisan key:generate"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

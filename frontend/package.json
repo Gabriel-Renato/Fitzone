@@ -1,17 +1,21 @@
 {
   "name": "fitzone-frontend",
   "version": "1.0.0",
-  "description": "FitZone - Sistema de Gerenciamento de Treinos",
+  "description": "FitZone Frontend",
+  "main": "index.html",
   "scripts": {
-    "dev": "browser-sync start --server --files '**/*.html, **/*.css, **/*.js' --port 3000",
-    "dev:simple": "php -S localhost:3000",
-    "start": "npm run dev",
-    "install-deps": "npm install browser-sync --save-dev"
+    "dev": "npx http-server . -p 3000 -o",
+    "start": "npx http-server . -p 3000",
+    "build": "echo 'Build completed'",
+    "serve": "npx http-server . -p 3000"
   },
-  "keywords": ["fitzone", "fitness", "workout", "treinos"],
-  "author": "",
+  "keywords": ["fitness", "frontend"],
+  "author": "FitZone Team",
   "license": "MIT",
   "devDependencies": {
-    "browser-sync": "^3.0.2"
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.2"
   }
 }

@@ -1,5 +1,7 @@
 // Configuração da API
-const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+if (typeof window.API_URL === 'undefined') {
+    window.API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+}
 
 // Verificar autenticação
 if (!isAuthenticated()) {
@@ -65,7 +67,7 @@ function showSection(sectionId) {
 // Carregar estatísticas
 async function loadStats() {
     try {
-        const response = await fetch(`${API_URL}/workout-logs-stats`, {
+        const response = await fetch(`${window.API_URL}/workout-logs-stats`, {
             headers: getAuthHeaders()
         });
         const data = await response.json();
@@ -85,7 +87,7 @@ function renderStats() {
 // Carregar plano semanal
 async function loadWorkoutPlans() {
     try {
-        const response = await fetch(`${API_URL}/workout-plans?user_id=${user.id}`, {
+        const response = await fetch(`${window.API_URL}/workout-plans?user_id=${user.id}`, {
             headers: getAuthHeaders()
         });
         const data = await response.json();
@@ -151,7 +153,7 @@ function renderWeeklyPlan() {
 // Carregar histórico
 async function loadWorkoutLogs() {
     try {
-        const response = await fetch(`${API_URL}/workout-logs`, {
+        const response = await fetch(`${window.API_URL}/workout-logs`, {
             headers: getAuthHeaders()
         });
         const data = await response.json();
@@ -207,7 +209,7 @@ function formatDate(dateString) {
 async function viewWorkoutExercises(workoutId, workoutPlanId, dayName) {
     showLoading();
     try {
-        const response = await fetch(`${API_URL}/workouts/${workoutId}`, {
+        const response = await fetch(`${window.API_URL}/workouts/${workoutId}`, {
             headers: getAuthHeaders()
         });
         
@@ -559,7 +561,7 @@ function setupForms() {
 
         showLoading();
         try {
-            const response = await fetch(`${API_URL}/workout-logs`, {
+            const response = await fetch(`${window.API_URL}/workout-logs`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(data)

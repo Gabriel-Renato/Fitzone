@@ -1,5 +1,7 @@
 // Configuração da API
-const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+if (typeof window.API_URL === 'undefined') {
+    window.API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+}
 
 // Aguardar carregamento das funções de autenticação
 function waitForAuth() {
@@ -87,7 +89,7 @@ function showSection(sectionId) {
 // Carregar Clientes
 async function loadClients() {
     try {
-        const response = await fetch(`${API_URL}/clients`, {
+        const response = await fetch(`${window.API_URL}/clients`, {
             headers: getAuthHeaders()
         });
         const data = await response.json();
@@ -133,6 +135,9 @@ function showAddClientModal() {
     showModal('clientModal');
 }
 
+// Expor função imediatamente
+window.showAddClientModal = showAddClientModal;
+
 
 function setupForms() {
     // Form de criar cliente
@@ -149,7 +154,7 @@ function setupForms() {
 
         showLoading();
         try {
-            const response = await fetch(`${API_URL}/clients`, {
+            const response = await fetch(`${window.API_URL}/clients`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(data)
@@ -190,7 +195,7 @@ function setupForms() {
 
         showLoading();
         try {
-            const response = await fetch(`${API_URL}/workout-plans`, {
+            const response = await fetch(`${window.API_URL}/workout-plans`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(data)
@@ -218,7 +223,7 @@ function setupForms() {
 // Carregar exercícios e treinos (reutilizar lógica do app.js original)
 async function loadExercises() {
     try {
-        const response = await fetch(`${API_URL}/exercises`, {
+        const response = await fetch(`${window.API_URL}/exercises`, {
             headers: getAuthHeaders()
         });
         const data = await response.json();
@@ -242,7 +247,7 @@ function renderExercises() {
 
 async function loadWorkouts() {
     try {
-        const response = await fetch(`${API_URL}/workouts?user_id=${user.id}`, {
+        const response = await fetch(`${window.API_URL}/workouts?user_id=${user.id}`, {
             headers: getAuthHeaders()
         });
         const data = await response.json();
@@ -267,7 +272,7 @@ function renderWorkouts() {
 async function viewClient(id) {
     showLoading();
     try {
-        const response = await fetch(`${API_URL}/clients/${id}`, {
+        const response = await fetch(`${window.API_URL}/clients/${id}`, {
             headers: getAuthHeaders()
         });
         
@@ -450,21 +455,27 @@ function showModal(modalId) {
     document.getElementById(modalId).classList.add('active');
 }
 
+// Expor função imediatamente
+window.showModal = showModal;
+
 function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
 }
+
+// Expor função imediatamente
+window.closeModal = closeModal;
 
 function showAddExerciseModal() {
     alert('Adicionar exercício - Use a tela original de exercícios');
 }
 
+// Expor função imediatamente
+window.showAddExerciseModal = showAddExerciseModal;
+
 function showCreateWorkoutModal() {
     alert('Criar treino - Use a tela original de treinos');
 }
 
-// Expor todas as funções necessárias globalmente
-window.showAddClientModal = showAddClientModal;
-window.showAddExerciseModal = showAddExerciseModal;
+// Expor função imediatamente
 window.showCreateWorkoutModal = showCreateWorkoutModal;
-window.showModal = showModal;
-window.closeModal = closeModal;
+

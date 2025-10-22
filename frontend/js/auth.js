@@ -1,5 +1,7 @@
 // Configuração da API
-const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+if (typeof window.API_URL === 'undefined') {
+    window.API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+}
 
 // Verificar se já está logado
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,7 +40,7 @@ async function handleLogin(e) {
     showLoading();
 
     try {
-        const response = await fetch(`${API_URL}/login`, {
+        const response = await fetch(`${window.API_URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -89,7 +91,7 @@ async function handleRegister(e) {
     showLoading();
 
     try {
-        const response = await fetch(`${API_URL}/register`, {
+        const response = await fetch(`${window.API_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,7 +136,7 @@ async function logout() {
     
     if (token) {
         try {
-            await fetch(`${API_URL}/logout`, {
+            await fetch(`${window.API_URL}/logout`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

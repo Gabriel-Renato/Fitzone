@@ -1,5 +1,7 @@
 // Configuração da API
-const API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+if (typeof window.API_URL === 'undefined') {
+    window.API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+}
 const USER_ID = 1; // Temporário até implementar autenticação
 
 // Estado da aplicação
@@ -54,7 +56,7 @@ function showSection(sectionId) {
 // API Calls - Exercises
 async function loadExercises() {
     try {
-        const response = await fetch(`${API_URL}/exercises`);
+        const response = await fetch(`${window.API_URL}/exercises`);
         const data = await response.json();
         exercises = data.data;
         renderExercises();
@@ -137,7 +139,7 @@ function filterExercises() {
 
 async function createExercise(data) {
     try {
-        const response = await fetch(`${API_URL}/exercises`, {
+        const response = await fetch(`${window.API_URL}/exercises`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -163,7 +165,7 @@ async function deleteExercise(id) {
     if (!confirm('Tem certeza que deseja deletar este exercício?')) return;
 
     try {
-        const response = await fetch(`${API_URL}/exercises/${id}`, {
+        const response = await fetch(`${window.API_URL}/exercises/${id}`, {
             method: 'DELETE'
         });
         
@@ -181,7 +183,7 @@ async function deleteExercise(id) {
 // API Calls - Workouts
 async function loadWorkouts() {
     try {
-        const response = await fetch(`${API_URL}/workouts?user_id=${USER_ID}`);
+        const response = await fetch(`${window.API_URL}/workouts?user_id=${USER_ID}`);
         const data = await response.json();
         workouts = data.data;
         renderWorkouts();
@@ -251,7 +253,7 @@ function renderWorkouts() {
 
 async function createWorkout(data) {
     try {
-        const response = await fetch(`${API_URL}/workouts`, {
+        const response = await fetch(`${window.API_URL}/workouts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -278,7 +280,7 @@ async function deleteWorkout(id) {
     if (!confirm('Tem certeza que deseja deletar este treino?')) return;
 
     try {
-        const response = await fetch(`${API_URL}/workouts/${id}`, {
+        const response = await fetch(`${window.API_URL}/workouts/${id}`, {
             method: 'DELETE'
         });
         
@@ -296,7 +298,7 @@ async function deleteWorkout(id) {
 // API Calls - Workout Plans
 async function loadWorkoutPlans() {
     try {
-        const response = await fetch(`${API_URL}/workout-plans?user_id=${USER_ID}`);
+        const response = await fetch(`${window.API_URL}/workout-plans?user_id=${USER_ID}`);
         const data = await response.json();
         workoutPlans = data.data;
         renderWeeklyPlan();
@@ -340,7 +342,7 @@ function renderWeeklyPlan() {
 
 async function createWorkoutPlan(data) {
     try {
-        const response = await fetch(`${API_URL}/workout-plans`, {
+        const response = await fetch(`${window.API_URL}/workout-plans`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -366,7 +368,7 @@ async function deletePlan(id) {
     if (!confirm('Remover este treino do plano semanal?')) return;
 
     try {
-        const response = await fetch(`${API_URL}/workout-plans/${id}`, {
+        const response = await fetch(`${window.API_URL}/workout-plans/${id}`, {
             method: 'DELETE'
         });
         

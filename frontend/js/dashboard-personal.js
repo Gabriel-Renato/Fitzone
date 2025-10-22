@@ -26,8 +26,8 @@ async function checkAuthentication() {
         return false;
     }
 
-    const user = getAuthUser();
-    if (user.role !== 'personal') {
+    const currentUser = getAuthUser();
+    if (currentUser.role !== 'personal') {
         window.location.href = 'dashboard-cliente.html';
         return false;
     }
@@ -39,13 +39,14 @@ async function checkAuthentication() {
 let clients = [];
 let exercises = [];
 let workouts = [];
+let user = null;
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
     const isAuth = await checkAuthentication();
     if (!isAuth) return;
     
-    const user = getAuthUser();
+    user = getAuthUser();
     document.getElementById('userName').textContent = user.name;
     initializeApp();
     setupNavigation();

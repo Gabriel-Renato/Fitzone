@@ -4,10 +4,10 @@
   "description": "FitZone Frontend",
   "main": "index.html",
   "scripts": {
-    "dev": "npx http-server . -p 3000 -o",
-    "start": "npx http-server . -p 3000",
+    "dev": "node node_modules/http-server/bin/http-server . -p 3000 -o",
+    "start": "node node_modules/http-server/bin/http-server . -p 3000",
     "build": "echo 'Build completed'",
-    "serve": "npx http-server . -p 3000"
+    "serve": "node node_modules/http-server/bin/http-server . -p 3000"
   },
   "keywords": ["fitness", "frontend"],
   "author": "FitZone Team",

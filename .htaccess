@@ -3,14 +3,21 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Redirecionar requisições da API para o arquivo de redirecionamento
-    RewriteCond %{REQUEST_URI} ^/api/(.*)$
-    RewriteRule ^api/(.*)$ api/index.php [L,QSA]
+    # NÃO redirecionar arquivos que existem fisicamente (com ou sem extensão)
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
     
-    # Se não for API, servir o frontend normalmente
+    # NÃO redirecionar diretórios que existem fisicamente
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Redirecionar requisições da API para api.php na raiz
+    RewriteCond %{REQUEST_URI} ^/api/(.*)$
+    RewriteRule ^api/(.*)$ api.php [L,QSA]
+    
+    # Redirecionar tudo para index.php (que decide o que fazer)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} !^/api/
-    RewriteRule ^(.*)$ frontend/$1 [L]
+    RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
 

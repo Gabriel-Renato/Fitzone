@@ -1,0 +1,16 @@
+# FitZone - Redirecionamento de rotas
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirecionar requisições da API para o arquivo PHP de redirecionamento
+    RewriteCond %{REQUEST_URI} ^/api/(.*)$
+    RewriteRule ^api/(.*)$ api/index.php [L,QSA]
+    
+    # Se não for API, servir o frontend normalmente
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/api/
+    RewriteRule ^(.*)$ frontend/$1 [L]
+</IfModule>
+

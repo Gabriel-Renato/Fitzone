@@ -1,6 +1,6 @@
 // Configuração da API
 if (typeof window.API_URL === 'undefined') {
-    window.API_URL = 'https://laravel-backend-production-a6ef.up.railway.app/api/v1';
+    window.API_URL = 'https://fitzone.wuaze.com/api/v1';
 }
 
 // Verificar se já está logado

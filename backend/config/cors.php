@@ -24,6 +24,8 @@ return [
         'http://localhost:5173',
         'https://fitzone-frontend.vercel.app',
         'https://fitzone-frontend-git-main-gabrielrenatosouzadearaujo-9864.vercel.app',
+        'https://fitzone.wuaze.com',
+        'http://fitzone.wuaze.com',
         // Adicione aqui o domínio do seu frontend
     ],
 

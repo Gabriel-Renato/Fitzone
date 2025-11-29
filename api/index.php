@@ -5,7 +5,7 @@
  */
 
 // Capturar a URI da requisição original
-$originalUri = $_SERVER['REQUEST_URI'];
+$originalUri = $_SERVER['REQUEST_URI'] ?? '/';
 
 // Remover /api da URI para obter o caminho da API
 $apiPath = preg_replace('#^/api#', '', $originalUri);
@@ -29,20 +29,51 @@ if (!file_exists($laravelPath)) {
     header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
-        'message' => 'Backend Laravel não encontrado em: ' . $laravelPath
-    ]);
+        'message' => 'Backend Laravel não encontrado',
+        'path' => $laravelPath,
+        'original_uri' => $originalUri,
+        'api_path' => $apiPath
+    ], JSON_PRETTY_PRINT);
     exit;
 }
 
-// Ajustar variáveis de ambiente para o Laravel
-$_SERVER['SCRIPT_NAME'] = '/api/index.php';
-$_SERVER['REQUEST_URI'] = $apiPath;
-$_SERVER['PHP_SELF'] = '/api/index.php';
+// Mudar para o diretório do Laravel
+$laravelDir = dirname($laravelPath);
+chdir($laravelDir);
 
-// Manter o método HTTP original
+// Ajustar variáveis de ambiente para o Laravel
+// IMPORTANTE: Ajustar REQUEST_URI para remover /api e manter apenas /v1/...
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['REQUEST_URI'] = $apiPath;  // Já está como /v1/exercises
+$_SERVER['PHP_SELF'] = '/index.php';
+$_SERVER['DOCUMENT_ROOT'] = $laravelDir;
+$_SERVER['SCRIPT_FILENAME'] = $laravelPath;
+
+// Preservar headers importantes
+if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_AUTHORIZATION'];
+}
+
+// Preservar método HTTP
 $_SERVER['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
+// Preservar Content-Type se existir
+if (isset($_SERVER['CONTENT_TYPE'])) {
+    $_SERVER['CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
+}
+
 // Incluir e executar o Laravel
-chdir(dirname($laravelPath));
-require $laravelPath;
+try {
+    require $laravelPath;
+} catch (Exception $e) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Erro ao processar requisição',
+        'error' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ], JSON_PRETTY_PRINT);
+}
 

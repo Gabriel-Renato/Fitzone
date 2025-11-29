@@ -3,7 +3,7 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Redirecionar requisições da API para o arquivo PHP de redirecionamento
+    # Redirecionar requisições da API para o arquivo de redirecionamento
     RewriteCond %{REQUEST_URI} ^/api/(.*)$
     RewriteRule ^api/(.*)$ api/index.php [L,QSA]
     

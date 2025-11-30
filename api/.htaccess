@@ -1,11 +1,11 @@
 # Configuração para /api/index.php funcionar no InfinityFree
 # Permite acessar /api/index.php/v1/exercises
 
+# Permitir PATH_INFO para /api/index.php/v1/exercises
+php_flag cgi.fix_pathinfo 1
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     # Não fazer nada, deixar o PHP processar
 </IfModule>
-
-# Permitir PATH_INFO para /api/index.php/v1/exercises
-php_flag cgi.fix_pathinfo 1
 

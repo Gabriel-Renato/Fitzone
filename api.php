@@ -15,6 +15,9 @@ if (strpos($requestUri, '/api/') !== 0) {
     exit;
 }
 
+// IMPORTANTE: O Laravel registra rotas da API com prefixo /api
+// Então precisamos passar /api/v1/... para o Laravel encontrar a rota
+
 // Manter o prefixo /api e garantir que tenha /v1
 $apiPath = $requestUri;
 

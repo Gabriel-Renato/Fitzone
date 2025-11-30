@@ -5,15 +5,33 @@
  * Acesse via: /api/index.php/v1/exercises
  */
 
-// Log de debug
-$logFile = __DIR__ . '/../backend/storage/logs/api-debug.log';
+// Log de debug - usar caminho absoluto
+$logDir = dirname(__DIR__) . '/backend/storage/logs';
+if (!is_dir($logDir)) {
+    @mkdir($logDir, 0755, true);
+}
+$logFile = $logDir . '/api-debug.log';
+
+// Garantir que o arquivo existe e tem permissões
+if (!file_exists($logFile)) {
+    @touch($logFile);
+    @chmod($logFile, 0666);
+}
+
 $logMessage = date('Y-m-d H:i:s') . " - API Request\n";
 $logMessage .= "REQUEST_URI: " . ($_SERVER['REQUEST_URI'] ?? 'N/A') . "\n";
 $logMessage .= "PATH_INFO: " . ($_SERVER['PATH_INFO'] ?? 'N/A') . "\n";
 $logMessage .= "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'N/A') . "\n";
 $logMessage .= "HTTP_ACCEPT: " . ($_SERVER['HTTP_ACCEPT'] ?? 'N/A') . "\n";
+$logMessage .= "SCRIPT_NAME: " . ($_SERVER['SCRIPT_NAME'] ?? 'N/A') . "\n";
 $logMessage .= "---\n";
-file_put_contents($logFile, $logMessage, FILE_APPEND);
+
+// Tentar escrever no log
+$writeResult = @file_put_contents($logFile, $logMessage, FILE_APPEND);
+if ($writeResult === false) {
+    // Se falhar, tentar criar arquivo de erro alternativo
+    error_log("Falha ao escrever em api-debug.log. Caminho: $logFile");
+}
 
 // Capturar a URI da requisição
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
@@ -81,12 +99,55 @@ if (!file_exists($laravelPath)) {
 // Mudar para o diretório do Laravel
 chdir(dirname($laravelPath));
 
-// Ajustar variáveis de ambiente
-$_SERVER['SCRIPT_NAME'] = '/index.php';
-$_SERVER['REQUEST_URI'] = $apiPath;
-$_SERVER['PHP_SELF'] = '/index.php';
-$_SERVER['DOCUMENT_ROOT'] = dirname($laravelPath);
-$_SERVER['SCRIPT_FILENAME'] = $laravelPath;
+// Capturar método HTTP e dados
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+$query = $_GET ?? [];
+$body = file_get_contents('php://input');
 
-// Incluir o Laravel
-require $laravelPath;
+// Limpar query string da URI se houver
+$apiPathClean = parse_url($apiPath, PHP_URL_PATH);
+
+// Log final antes de passar para Laravel
+file_put_contents($logFile, "Final API Path (clean): $apiPathClean\n", FILE_APPEND);
+file_put_contents($logFile, "REQUEST_METHOD: $method\n", FILE_APPEND);
+file_put_contents($logFile, "Body length: " . strlen($body) . "\n", FILE_APPEND);
+file_put_contents($logFile, "========================================\n\n", FILE_APPEND);
+
+// Carregar Laravel diretamente (não via require do index.php)
+require __DIR__ . '/../backend/vendor/autoload.php';
+
+// Bootstrap Laravel
+$app = require_once __DIR__ . '/../backend/bootstrap/app.php';
+
+// Criar requisição explicitamente (como no teste que funcionou)
+$request = \Illuminate\Http\Request::create(
+    $apiPathClean,  // URI: /api/v1/login
+    $method,         // POST
+    $query,          // Query parameters
+    $_COOKIE ?? [],  // Cookies
+    $_FILES ?? [],   // Files
+    $_SERVER,        // Server vars
+    $body            // Request body
+);
+
+// Processar requisição - o Laravel envia a resposta automaticamente
+try {
+    $response = $app->handleRequest($request);
+    // Se houver resposta, enviar (pode já ter sido enviada)
+    if ($response && !headers_sent()) {
+        $response->send();
+    }
+} catch (\Throwable $e) {
+    // Se houver erro, logar e retornar JSON de erro
+    file_put_contents($logFile, "ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n", FILE_APPEND);
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erro ao processar requisição',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+exit;

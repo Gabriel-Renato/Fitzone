@@ -5,7 +5,31 @@ if (typeof window.API_URL === 'undefined') {
     window.API_URL = 'https://fitzone.wuaze.com/api/index.php/v1';
     // Alternativa: 'https://fitzone.wuaze.com/api/v1' (se mod_rewrite funcionar)
 }
-const USER_ID = 1; // Temporário até implementar autenticação
+
+// Função auxiliar para obter headers com autenticação
+function getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    };
+    
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
+}
+
+// Obter USER_ID do usuário autenticado
+function getUserId() {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        return user.id;
+    }
+    return null;
+}
 
 // Estado da aplicação
 let exercises = [];
@@ -15,6 +39,15 @@ let selectedExercisesForWorkout = [];
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
+    // Verificar autenticação antes de inicializar
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        // Se não estiver autenticado, redirecionar para login
+        window.location.href = 'login.html';
+        return;
+    }
+    
     initializeApp();
     setupNavigation();
     setupForms();
@@ -28,6 +61,13 @@ async function initializeApp() {
         await loadWorkoutPlans();
         await loadMuscleGroups();
     } catch (error) {
+        // Se receber 401 (não autenticado), redirecionar para login
+        if (error.message && error.message.includes('401')) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+            return;
+        }
         showError('Erro ao carregar dados');
         console.error(error);
     } finally {
@@ -59,13 +99,25 @@ function showSection(sectionId) {
 // API Calls - Exercises
 async function loadExercises() {
     try {
-        const response = await fetch(`${window.API_URL}/exercises`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${window.API_URL}/exercises`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.status === 401) {
+            throw new Error('401 Unauthorized');
+        }
+        
         const data = await response.json();
         exercises = data.data;
         renderExercises();
         populateExerciseSelect();
     } catch (error) {
         console.error('Erro ao carregar exercícios:', error);
+        throw error;
     }
 }
 
@@ -144,9 +196,7 @@ async function createExercise(data) {
     try {
         const response = await fetch(`${window.API_URL}/exercises`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(data)
         });
         
@@ -169,7 +219,8 @@ async function deleteExercise(id) {
 
     try {
         const response = await fetch(`${window.API_URL}/exercises/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: getAuthHeaders()
         });
         
         const result = await response.json();
@@ -186,13 +237,30 @@ async function deleteExercise(id) {
 // API Calls - Workouts
 async function loadWorkouts() {
     try {
-        const response = await fetch(`${window.API_URL}/workouts?user_id=${USER_ID}`);
+        const token = localStorage.getItem('token');
+        const userId = getUserId();
+        if (!userId) {
+            throw new Error('401 Unauthorized');
+        }
+        
+        const response = await fetch(`${window.API_URL}/workouts?user_id=${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.status === 401) {
+            throw new Error('401 Unauthorized');
+        }
+        
         const data = await response.json();
         workouts = data.data;
         renderWorkouts();
         populateWorkoutSelect();
     } catch (error) {
         console.error('Erro ao carregar treinos:', error);
+        throw error;
     }
 }
 
@@ -256,11 +324,18 @@ function renderWorkouts() {
 
 async function createWorkout(data) {
     try {
+        const userId = getUserId();
+        if (!userId) {
+            showError('Usuário não autenticado');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        data.user_id = userId;
+        
         const response = await fetch(`${window.API_URL}/workouts`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(data)
         });
         
@@ -284,7 +359,8 @@ async function deleteWorkout(id) {
 
     try {
         const response = await fetch(`${window.API_URL}/workouts/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: getAuthHeaders()
         });
         
         const result = await response.json();
@@ -301,12 +377,29 @@ async function deleteWorkout(id) {
 // API Calls - Workout Plans
 async function loadWorkoutPlans() {
     try {
-        const response = await fetch(`${window.API_URL}/workout-plans?user_id=${USER_ID}`);
+        const token = localStorage.getItem('token');
+        const userId = getUserId();
+        if (!userId) {
+            throw new Error('401 Unauthorized');
+        }
+        
+        const response = await fetch(`${window.API_URL}/workout-plans?user_id=${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.status === 401) {
+            throw new Error('401 Unauthorized');
+        }
+        
         const data = await response.json();
         workoutPlans = data.data;
         renderWeeklyPlan();
     } catch (error) {
         console.error('Erro ao carregar planos:', error);
+        throw error;
     }
 }
 
@@ -345,11 +438,18 @@ function renderWeeklyPlan() {
 
 async function createWorkoutPlan(data) {
     try {
+        const userId = getUserId();
+        if (!userId) {
+            showError('Usuário não autenticado');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        data.user_id = userId;
+        
         const response = await fetch(`${window.API_URL}/workout-plans`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(data)
         });
         
@@ -372,7 +472,8 @@ async function deletePlan(id) {
 
     try {
         const response = await fetch(`${window.API_URL}/workout-plans/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: getAuthHeaders()
         });
         
         const result = await response.json();
@@ -411,8 +512,15 @@ function setupForms() {
             return;
         }
 
+        const userId = getUserId();
+        if (!userId) {
+            showError('Usuário não autenticado');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         const data = {
-            user_id: USER_ID,
+            user_id: userId,
             name: document.getElementById('workoutName').value,
             description: document.getElementById('workoutDescription').value,
             focus: document.getElementById('workoutFocus').value,
@@ -426,9 +534,16 @@ function setupForms() {
     document.getElementById('planForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        const userId = getUserId();
+        if (!userId) {
+            showError('Usuário não autenticado');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         const time = document.getElementById('planTime').value;
         const data = {
-            user_id: USER_ID,
+            user_id: userId,
             workout_id: parseInt(document.getElementById('planWorkout').value),
             day_of_week: document.getElementById('planDay').value,
             scheduled_time: time || null,

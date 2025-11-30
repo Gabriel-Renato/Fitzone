@@ -67,8 +67,18 @@ if (file_exists($staticFile) && is_file($staticFile)) {
     exit;
 }
 
-// Se for a raiz ou index, servir frontend/index.html
+// Se for a raiz ou index, verificar autenticação e servir login ou dashboard
 if ($requestPath === '/' || $requestPath === '/index.php' || $requestPath === '/index.html') {
+    // Verificar se há token de autenticação (cookie ou localStorage será verificado no frontend)
+    // Por enquanto, sempre servir login.html na raiz
+    $loginPage = __DIR__ . '/frontend/login.html';
+    if (file_exists($loginPage)) {
+        header('Content-Type: text/html; charset=utf-8');
+        readfile($loginPage);
+        exit;
+    }
+    
+    // Fallback: se login.html não existir, tentar index.html
     $frontendIndex = __DIR__ . '/frontend/index.html';
     if (file_exists($frontendIndex)) {
         header('Content-Type: text/html; charset=utf-8');

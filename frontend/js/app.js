@@ -1,6 +1,9 @@
 // Configuração da API
+// Usando /api/index.php/v1 porque mod_rewrite pode não estar funcionando no InfinityFree
 if (typeof window.API_URL === 'undefined') {
-    window.API_URL = 'https://fitzone.wuaze.com/api/v1';
+    // Tenta primeiro a rota padrão, se falhar, usa a alternativa
+    window.API_URL = 'https://fitzone.wuaze.com/api/index.php/v1';
+    // Alternativa: 'https://fitzone.wuaze.com/api/v1' (se mod_rewrite funcionar)
 }
 const USER_ID = 1; // Temporário até implementar autenticação
 

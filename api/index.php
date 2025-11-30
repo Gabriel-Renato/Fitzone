@@ -126,10 +126,6 @@ $laravelPath = $apiPathClean; // Já está como /api/v1/login
 // Log do caminho que será passado ao Laravel
 file_put_contents($logFile, "Laravel Path (full): $laravelPath\n", FILE_APPEND);
 
-// Ajustar $_SERVER para que o Laravel reconheça como requisição da API
-$_SERVER['REQUEST_URI'] = $laravelPath;
-$_SERVER['PATH_INFO'] = $laravelPath;
-
 // IMPORTANTE: Garantir que o caminho está correto antes de criar a requisição
 // Se por algum motivo o caminho não começar com /api, adicionar
 if (strpos($laravelPath, '/api/') !== 0) {
@@ -144,6 +140,23 @@ if (strpos($laravelPath, '/api/') !== 0) {
 
 file_put_contents($logFile, "Final Laravel Path (after validation): $laravelPath\n", FILE_APPEND);
 
+// Preparar $_SERVER com headers corretos para o Laravel reconhecer como API
+$serverVars = $_SERVER;
+$serverVars['REQUEST_URI'] = $laravelPath;
+$serverVars['PATH_INFO'] = $laravelPath;
+$serverVars['SCRIPT_NAME'] = '/index.php';
+
+// Garantir headers importantes para o Laravel reconhecer como requisição da API
+if (!isset($serverVars['HTTP_ACCEPT']) || empty($serverVars['HTTP_ACCEPT'])) {
+    $serverVars['HTTP_ACCEPT'] = 'application/json';
+}
+if (!isset($serverVars['CONTENT_TYPE']) && !empty($body)) {
+    $serverVars['CONTENT_TYPE'] = 'application/json';
+}
+
+file_put_contents($logFile, "HTTP_ACCEPT: " . ($serverVars['HTTP_ACCEPT'] ?? 'N/A') . "\n", FILE_APPEND);
+file_put_contents($logFile, "CONTENT_TYPE: " . ($serverVars['CONTENT_TYPE'] ?? 'N/A') . "\n", FILE_APPEND);
+
 // Criar requisição explicitamente
 $request = \Illuminate\Http\Request::create(
     $laravelPath,    // URI: /api/v1/login (caminho completo)
@@ -151,7 +164,7 @@ $request = \Illuminate\Http\Request::create(
     $query,          // Query parameters
     $_COOKIE ?? [],  // Cookies
     $_FILES ?? [],   // Files
-    $_SERVER,        // Server vars
+    $serverVars,     // Server vars (com headers corretos)
     $body            // Request body
 );
 

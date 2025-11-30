@@ -20,6 +20,19 @@ if (strpos($requestPath, '/api/') === 0) {
     exit;
 }
 
+// Se for requisição para /backend, redirecionar para /backend/public/
+if (strpos($requestPath, '/backend') === 0 && $requestPath !== '/backend/public' && strpos($requestPath, '/backend/public') !== 0) {
+    // Se for exatamente /backend ou /backend/, redirecionar para /backend/public/
+    if ($requestPath === '/backend' || $requestPath === '/backend/') {
+        header('Location: /backend/public/');
+        exit;
+    }
+    // Se for /backend/algo, redirecionar para /backend/public/algo
+    $rest = substr($requestPath, 8); // Remove '/backend'
+    header('Location: /backend/public' . $rest);
+    exit;
+}
+
 // Verificar se é um arquivo estático que existe fisicamente
 $staticFile = __DIR__ . $requestPath;
 

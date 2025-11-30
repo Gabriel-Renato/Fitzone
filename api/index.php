@@ -102,7 +102,8 @@ chdir(dirname($laravelPath));
 // Capturar método HTTP e dados
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $query = $_GET ?? [];
-$body = file_get_contents('php://input');
+// NÃO ler php://input aqui - deixar o Laravel ler diretamente
+// $body = file_get_contents('php://input');
 
 // Limpar query string da URI se houver
 $apiPathClean = parse_url($apiPath, PHP_URL_PATH);
@@ -110,68 +111,94 @@ $apiPathClean = parse_url($apiPath, PHP_URL_PATH);
 // Log final antes de passar para Laravel
 file_put_contents($logFile, "Final API Path (clean): $apiPathClean\n", FILE_APPEND);
 file_put_contents($logFile, "REQUEST_METHOD: $method\n", FILE_APPEND);
-file_put_contents($logFile, "Body length: " . strlen($body) . "\n", FILE_APPEND);
 file_put_contents($logFile, "========================================\n\n", FILE_APPEND);
 
-// Carregar Laravel diretamente (não via require do index.php)
-require __DIR__ . '/../backend/vendor/autoload.php';
-
-// Bootstrap Laravel
-$app = require_once __DIR__ . '/../backend/bootstrap/app.php';
-
 // IMPORTANTE: Passar o caminho completo /api/v1/login
-// O Laravel reconhece automaticamente rotas que começam com /api
+// O Laravel precisa do prefixo /api para reconhecer como rota da API
 $laravelPath = $apiPathClean; // Já está como /api/v1/login
 
-// Log do caminho que será passado ao Laravel
-file_put_contents($logFile, "Laravel Path (full): $laravelPath\n", FILE_APPEND);
-
-// IMPORTANTE: Garantir que o caminho está correto antes de criar a requisição
-// Se por algum motivo o caminho não começar com /api, adicionar
+// Garantir que o caminho está correto
 if (strpos($laravelPath, '/api/') !== 0) {
-    // Se começar com /v1, adicionar /api antes
     if (strpos($laravelPath, '/v1/') === 0) {
         $laravelPath = '/api' . $laravelPath;
     } elseif (strpos($laravelPath, '/api') !== 0) {
-        // Se não começar com /api nem /v1, adicionar /api/v1
         $laravelPath = '/api/v1' . (substr($laravelPath, 0, 1) !== '/' ? '/' : '') . $laravelPath;
     }
 }
 
-file_put_contents($logFile, "Final Laravel Path (after validation): $laravelPath\n", FILE_APPEND);
+// Ajustar $_SERVER para o Laravel capturar corretamente
+// Passar apenas /v1/login (sem /api) porque o Laravel adiciona automaticamente
+$_SERVER['REQUEST_URI'] = $laravelPath;
+$_SERVER['PATH_INFO'] = $laravelPath;
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['REQUEST_METHOD'] = $method;
 
-// Preparar $_SERVER com headers corretos para o Laravel reconhecer como API
-$serverVars = $_SERVER;
-$serverVars['REQUEST_URI'] = $laravelPath;
-$serverVars['PATH_INFO'] = $laravelPath;
-$serverVars['SCRIPT_NAME'] = '/index.php';
-
-// Garantir headers importantes para o Laravel reconhecer como requisição da API
-if (!isset($serverVars['HTTP_ACCEPT']) || empty($serverVars['HTTP_ACCEPT'])) {
-    $serverVars['HTTP_ACCEPT'] = 'application/json';
+// Garantir headers importantes
+if (!isset($_SERVER['HTTP_ACCEPT']) || empty($_SERVER['HTTP_ACCEPT'])) {
+    $_SERVER['HTTP_ACCEPT'] = 'application/json';
 }
-if (!isset($serverVars['CONTENT_TYPE']) && !empty($body)) {
-    $serverVars['CONTENT_TYPE'] = 'application/json';
+// Garantir CONTENT_TYPE se for POST/PUT/PATCH
+if (in_array($method, ['POST', 'PUT', 'PATCH']) && !isset($_SERVER['CONTENT_TYPE'])) {
+    $_SERVER['CONTENT_TYPE'] = 'application/json';
 }
 
-file_put_contents($logFile, "HTTP_ACCEPT: " . ($serverVars['HTTP_ACCEPT'] ?? 'N/A') . "\n", FILE_APPEND);
-file_put_contents($logFile, "CONTENT_TYPE: " . ($serverVars['CONTENT_TYPE'] ?? 'N/A') . "\n", FILE_APPEND);
+file_put_contents($logFile, "Final Laravel Path: $laravelPath\n", FILE_APPEND);
+file_put_contents($logFile, "HTTP_ACCEPT: " . ($_SERVER['HTTP_ACCEPT'] ?? 'N/A') . "\n", FILE_APPEND);
+file_put_contents($logFile, "CONTENT_TYPE: " . ($_SERVER['CONTENT_TYPE'] ?? 'N/A') . "\n", FILE_APPEND);
 
-// Criar requisição explicitamente
+// IMPORTANTE: Usar o index.php do Laravel para garantir que tudo seja inicializado corretamente
+// Mas primeiro ajustar $_SERVER para que o Laravel processe a requisição correta
+
+// Mudar para o diretório do Laravel
+$laravelPublicPath = dirname(__DIR__) . '/backend/public';
+chdir($laravelPublicPath);
+
+// Ajustar variáveis de ambiente para o Laravel
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['REQUEST_URI'] = $laravelPath;
+$_SERVER['PHP_SELF'] = '/index.php';
+$_SERVER['DOCUMENT_ROOT'] = $laravelPublicPath;
+$_SERVER['SCRIPT_FILENAME'] = $laravelPublicPath . '/index.php';
+
+// Carregar o Laravel via seu index.php (garante que tudo seja inicializado corretamente)
+require $laravelPublicPath . '/index.php';
+exit; // O index.php do Laravel já processa e envia a resposta
+
+// IMPORTANTE: Request::capture() pode não funcionar corretamente quando $_SERVER é modificado
+// Vamos criar a requisição manualmente com os parâmetros corretos
 $request = \Illuminate\Http\Request::create(
     $laravelPath,    // URI: /api/v1/login (caminho completo)
     $method,         // POST
     $query,          // Query parameters
     $_COOKIE ?? [],  // Cookies
     $_FILES ?? [],   // Files
-    $serverVars,     // Server vars (com headers corretos)
-    $body            // Request body
+    $_SERVER,        // Server vars (já ajustados)
+    file_get_contents('php://input') // Body (se ainda disponível)
 );
 
 // Log adicional
 file_put_contents($logFile, "Request path(): " . $request->path() . "\n", FILE_APPEND);
 file_put_contents($logFile, "Request is('api/*'): " . ($request->is('api/*') ? 'yes' : 'no') . "\n", FILE_APPEND);
 file_put_contents($logFile, "Request uri(): " . $request->getRequestUri() . "\n", FILE_APPEND);
+file_put_contents($logFile, "Request expectsJson(): " . ($request->expectsJson() ? 'yes' : 'no') . "\n", FILE_APPEND);
+
+// Verificar se a rota existe antes de processar
+try {
+    $routes = $app->make('router')->getRoutes();
+    $allRoutes = [];
+    foreach ($routes as $route) {
+        $allRoutes[] = implode('|', $route->methods()) . ' ' . $route->uri();
+    }
+    file_put_contents($logFile, "Total routes: " . count($allRoutes) . "\n", FILE_APPEND);
+    file_put_contents($logFile, "API routes: " . implode(', ', array_filter($allRoutes, function($r) { return strpos($r, 'api/') !== false; })) . "\n", FILE_APPEND);
+    
+    $matched = $routes->match($request);
+    file_put_contents($logFile, "✅ Route matched: " . ($matched ? $matched->getName() : 'NONE') . "\n", FILE_APPEND);
+} catch (\Exception $e) {
+    file_put_contents($logFile, "❌ Route match error: " . $e->getMessage() . "\n", FILE_APPEND);
+    file_put_contents($logFile, "Request method: " . $request->method() . "\n", FILE_APPEND);
+    file_put_contents($logFile, "Request path: " . $request->path() . "\n", FILE_APPEND);
+}
 
 // Processar requisição - o Laravel envia a resposta automaticamente
 try {
@@ -182,15 +209,37 @@ try {
     }
 } catch (\Throwable $e) {
     // Se houver erro, logar e retornar JSON de erro
-    file_put_contents($logFile, "ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n", FILE_APPEND);
-    if (!headers_sent()) {
-        http_response_code(500);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'success' => false,
-            'message' => 'Erro ao processar requisição',
-            'error' => $e->getMessage()
-        ]);
+    $errorMsg = "ERROR: " . $e->getMessage() . "\n";
+    $errorMsg .= "Request path: " . $request->path() . "\n";
+    $errorMsg .= "Request URI: " . $request->getRequestUri() . "\n";
+    $errorMsg .= "Is API: " . ($request->is('api/*') ? 'yes' : 'no') . "\n";
+    $errorMsg .= "Expects JSON: " . ($request->expectsJson() ? 'yes' : 'no') . "\n";
+    $errorMsg .= "Trace: " . $e->getTraceAsString() . "\n";
+    file_put_contents($logFile, $errorMsg, FILE_APPEND);
+    
+    // Se for erro 404 de rota, retornar JSON apropriado
+    if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        if (!headers_sent()) {
+            http_response_code(404);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 'Route not found',
+                'request_path' => $request->path(),
+                'request_uri' => $request->getRequestUri()
+            ], JSON_PRETTY_PRINT);
+        }
+    } else {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erro ao processar requisição',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
 exit;

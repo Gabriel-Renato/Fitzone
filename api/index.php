@@ -1,79 +1,46 @@
 <?php
 /**
- * FitZone - Redirecionador de API
- * Redireciona todas as requisições /api/* para o backend Laravel
+ * FitZone - Router da API para InfinityFree
+ * Este arquivo funciona mesmo sem mod_rewrite
+ * Acesse via: /api/index.php/v1/exercises
  */
 
-// Capturar a URI da requisição original
-$originalUri = $_SERVER['REQUEST_URI'] ?? '/';
+// Capturar a URI da requisição
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 
-// Remover /api da URI para obter o caminho da API
-$apiPath = preg_replace('#^/api#', '', $originalUri);
+// Remover /api/index.php da URI se presente
+$apiPath = preg_replace('#^/api/index\.php#', '/api', $requestUri);
 
-// Garantir que comece com /
-if (substr($apiPath, 0, 1) !== '/') {
-    $apiPath = '/' . $apiPath;
+// Se não começar com /api/v1, adicionar /v1 após /api
+if (strpos($apiPath, '/api/v1') !== 0) {
+    // Remover /api temporariamente para adicionar /v1
+    $pathWithoutApi = preg_replace('#^/api#', '', $apiPath);
+    $apiPath = '/api/v1' . ($pathWithoutApi === '/' ? '' : $pathWithoutApi);
 }
 
-// Se não começar com /v1, adicionar
-if (substr($apiPath, 0, 3) !== '/v1') {
-    $apiPath = '/v1' . $apiPath;
-}
+// Caminho para o Laravel
+$laravelPath = dirname(__DIR__) . '/backend/public/index.php';
 
-// Caminho absoluto para o index.php do Laravel
-$laravelPath = __DIR__ . '/../backend/public/index.php';
-
-// Verificar se o arquivo existe
 if (!file_exists($laravelPath)) {
     http_response_code(500);
     header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
         'message' => 'Backend Laravel não encontrado',
-        'path' => $laravelPath,
-        'original_uri' => $originalUri,
-        'api_path' => $apiPath
-    ], JSON_PRETTY_PRINT);
+        'path' => $laravelPath
+    ]);
     exit;
 }
 
 // Mudar para o diretório do Laravel
-$laravelDir = dirname($laravelPath);
-chdir($laravelDir);
+chdir(dirname($laravelPath));
 
-// Ajustar variáveis de ambiente para o Laravel
-// IMPORTANTE: Ajustar REQUEST_URI para remover /api e manter apenas /v1/...
+// Ajustar variáveis de ambiente
 $_SERVER['SCRIPT_NAME'] = '/index.php';
-$_SERVER['REQUEST_URI'] = $apiPath;  // Já está como /v1/exercises
+$_SERVER['REQUEST_URI'] = $apiPath;
 $_SERVER['PHP_SELF'] = '/index.php';
-$_SERVER['DOCUMENT_ROOT'] = $laravelDir;
+$_SERVER['DOCUMENT_ROOT'] = dirname($laravelPath);
 $_SERVER['SCRIPT_FILENAME'] = $laravelPath;
 
-// Preservar headers importantes
-if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-    $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_AUTHORIZATION'];
-}
-
-// Preservar método HTTP
-$_SERVER['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-
-// Preservar Content-Type se existir
-if (isset($_SERVER['CONTENT_TYPE'])) {
-    $_SERVER['CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
-}
-
-// Incluir e executar o Laravel
-try {
-    require $laravelPath;
-} catch (Exception $e) {
-    http_response_code(500);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => false,
-        'message' => 'Erro ao processar requisição',
-        'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine()
-    ], JSON_PRETTY_PRINT);
-}
-
+// Incluir o Laravel
+require $laravelPath;

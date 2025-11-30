@@ -1,4 +1,5 @@
 # FitZone - Redirecionamento de rotas
+# Configurado para funcionar no InfinityFree (com e sem mod_rewrite)
 
 # Definir index.php como arquivo de índice padrão
 DirectoryIndex index.php index.html
@@ -7,7 +8,9 @@ DirectoryIndex index.php index.html
     RewriteEngine On
     
     # Redirecionar requisições da API para api.php na raiz (PRIORIDADE MÁXIMA)
+    # Formato: /api/v1/exercises -> api.php
     RewriteCond %{REQUEST_URI} ^/api/(.*)$
+    RewriteCond %{REQUEST_URI} !^/api/index\.php
     RewriteRule ^api/(.*)$ api.php [L,QSA]
     
     # NÃO redirecionar arquivos que existem fisicamente (com ou sem extensão)
@@ -24,11 +27,6 @@ DirectoryIndex index.php index.html
     RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
 
-# Fallback: Se mod_rewrite não estiver disponível, usar PHP para roteamento
-<IfModule !mod_rewrite.c>
-    # Forçar todas as requisições /api/* para api.php
-    <FilesMatch "^api\.php$">
-        SetHandler application/x-httpd-php
-    </FilesMatch>
-</IfModule>
+# Fallback para InfinityFree: Se mod_rewrite não funcionar, usar estrutura de diretórios
+# As requisições podem ser feitas via /api/index.php/v1/exercises
 

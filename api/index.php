@@ -119,9 +119,20 @@ require __DIR__ . '/../backend/vendor/autoload.php';
 // Bootstrap Laravel
 $app = require_once __DIR__ . '/../backend/bootstrap/app.php';
 
-// Criar requisição explicitamente (como no teste que funcionou)
+// IMPORTANTE: Passar o caminho completo /api/v1/login
+// O Laravel reconhece automaticamente rotas que começam com /api
+$laravelPath = $apiPathClean; // Já está como /api/v1/login
+
+// Log do caminho que será passado ao Laravel
+file_put_contents($logFile, "Laravel Path (full): $laravelPath\n", FILE_APPEND);
+
+// Ajustar $_SERVER para que o Laravel reconheça como requisição da API
+$_SERVER['REQUEST_URI'] = $laravelPath;
+$_SERVER['PATH_INFO'] = $laravelPath;
+
+// Criar requisição explicitamente
 $request = \Illuminate\Http\Request::create(
-    $apiPathClean,  // URI: /api/v1/login
+    $laravelPath,    // URI: /api/v1/login (caminho completo)
     $method,         // POST
     $query,          // Query parameters
     $_COOKIE ?? [],  // Cookies
@@ -129,6 +140,11 @@ $request = \Illuminate\Http\Request::create(
     $_SERVER,        // Server vars
     $body            // Request body
 );
+
+// Log adicional
+file_put_contents($logFile, "Request path(): " . $request->path() . "\n", FILE_APPEND);
+file_put_contents($logFile, "Request is('api/*'): " . ($request->is('api/*') ? 'yes' : 'no') . "\n", FILE_APPEND);
+file_put_contents($logFile, "Request uri(): " . $request->getRequestUri() . "\n", FILE_APPEND);
 
 // Processar requisição - o Laravel envia a resposta automaticamente
 try {

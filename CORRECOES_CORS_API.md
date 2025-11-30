@@ -122,3 +122,4 @@ Deve retornar headers CORS permitindo a origem.
 - [ ] Teste de requisição CORS funcionando
 - [ ] Frontend fazendo requisições para a URL correta
 
+

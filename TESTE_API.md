@@ -92,3 +92,4 @@ Se não estiver funcionando, verifique:
 - **Causa:** CORS não configurado corretamente
 - **Solução:** Verificar `backend/config/cors.php` e limpar cache
 
+

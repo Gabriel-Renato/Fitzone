@@ -10,7 +10,12 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $requestPath = parse_url($requestUri, PHP_URL_PATH);
 
 // Se for requisição da API, redirecionar para api.php
+// IMPORTANTE: Esta verificação deve ser a PRIMEIRA coisa a fazer
 if (strpos($requestPath, '/api/') === 0) {
+    // Definir headers apropriados para API
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=utf-8');
+    }
     require __DIR__ . '/api.php';
     exit;
 }

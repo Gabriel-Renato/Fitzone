@@ -10,3 +10,4 @@ echo json_encode([
     'script_name' => $_SERVER['SCRIPT_NAME'] ?? 'não definido',
 ], JSON_PRETTY_PRINT);
 
+

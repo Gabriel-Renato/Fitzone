@@ -104,3 +104,4 @@ Se funcionar, a conexão está OK! ✅
 - [ ] Testar conexão com `php artisan migrate:status`
 - [ ] Limpar cache: `php artisan config:clear`
 
+

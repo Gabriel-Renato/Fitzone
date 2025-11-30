@@ -1,7 +1,14 @@
 # FitZone - Redirecionamento de rotas
 
+# Definir index.php como arquivo de índice padrão
+DirectoryIndex index.php index.html
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    
+    # Redirecionar requisições da API para api.php na raiz (PRIORIDADE MÁXIMA)
+    RewriteCond %{REQUEST_URI} ^/api/(.*)$
+    RewriteRule ^api/(.*)$ api.php [L,QSA]
     
     # NÃO redirecionar arquivos que existem fisicamente (com ou sem extensão)
     RewriteCond %{REQUEST_FILENAME} -f
@@ -11,13 +18,17 @@
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
     
-    # Redirecionar requisições da API para api.php na raiz
-    RewriteCond %{REQUEST_URI} ^/api/(.*)$
-    RewriteRule ^api/(.*)$ api.php [L,QSA]
-    
     # Redirecionar tudo para index.php (que decide o que fazer)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
+
+# Fallback: Se mod_rewrite não estiver disponível, usar PHP para roteamento
+<IfModule !mod_rewrite.c>
+    # Forçar todas as requisições /api/* para api.php
+    <FilesMatch "^api\.php$">
+        SetHandler application/x-httpd-php
+    </FilesMatch>
 </IfModule>
 

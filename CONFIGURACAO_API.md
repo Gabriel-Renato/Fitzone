@@ -103,3 +103,4 @@ Fitzone/
 - [ ] Verificar logs do Laravel para erros
 - [ ] Testar no navegador se CORS está funcionando
 
+

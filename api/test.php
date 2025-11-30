@@ -15,3 +15,4 @@ echo json_encode([
     'laravel_exists' => file_exists(__DIR__ . '/../backend/public/index.php'),
 ], JSON_PRETTY_PRINT);
 
+

@@ -15,17 +15,19 @@ if (strpos($requestUri, '/api/') !== 0) {
     exit;
 }
 
-// Remover /api da URI
-$apiPath = preg_replace('#^/api#', '', $requestUri);
+// Manter o prefixo /api e garantir que tenha /v1
+$apiPath = $requestUri;
 
-// Garantir que comece com /
-if (substr($apiPath, 0, 1) !== '/') {
-    $apiPath = '/' . $apiPath;
+// Garantir que comece com /api
+if (strpos($apiPath, '/api/') !== 0) {
+    $apiPath = '/api' . (substr($apiPath, 0, 1) !== '/' ? '/' : '') . $apiPath;
 }
 
-// Se não começar com /v1, adicionar
-if (substr($apiPath, 0, 3) !== '/v1') {
-    $apiPath = '/v1' . $apiPath;
+// Se não começar com /api/v1, adicionar /v1 após /api
+if (strpos($apiPath, '/api/v1') !== 0) {
+    // Remover /api temporariamente para adicionar /v1
+    $pathWithoutApi = preg_replace('#^/api#', '', $apiPath);
+    $apiPath = '/api/v1' . ($pathWithoutApi === '/' ? '' : $pathWithoutApi);
 }
 
 // Caminho para o Laravel
@@ -54,4 +56,5 @@ $_SERVER['SCRIPT_FILENAME'] = $laravelPath;
 
 // Incluir o Laravel
 require $laravelPath;
+
 

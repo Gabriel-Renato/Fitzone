@@ -127,3 +127,4 @@ php artisan cache:clear
 - Verifique se o host e porta estão corretos
 - Verifique firewall/iptables se for conexão remota
 
+

@@ -92,3 +92,4 @@ tail -f /var/www/html/Fitzone/backend/storage/logs/laravel.log
 - [ ] Frontend carrega corretamente
 - [ ] CORS configurado corretamente
 
+

@@ -130,6 +130,20 @@ file_put_contents($logFile, "Laravel Path (full): $laravelPath\n", FILE_APPEND);
 $_SERVER['REQUEST_URI'] = $laravelPath;
 $_SERVER['PATH_INFO'] = $laravelPath;
 
+// IMPORTANTE: Garantir que o caminho está correto antes de criar a requisição
+// Se por algum motivo o caminho não começar com /api, adicionar
+if (strpos($laravelPath, '/api/') !== 0) {
+    // Se começar com /v1, adicionar /api antes
+    if (strpos($laravelPath, '/v1/') === 0) {
+        $laravelPath = '/api' . $laravelPath;
+    } elseif (strpos($laravelPath, '/api') !== 0) {
+        // Se não começar com /api nem /v1, adicionar /api/v1
+        $laravelPath = '/api/v1' . (substr($laravelPath, 0, 1) !== '/' ? '/' : '') . $laravelPath;
+    }
+}
+
+file_put_contents($logFile, "Final Laravel Path (after validation): $laravelPath\n", FILE_APPEND);
+
 // Criar requisição explicitamente
 $request = \Illuminate\Http\Request::create(
     $laravelPath,    // URI: /api/v1/login (caminho completo)

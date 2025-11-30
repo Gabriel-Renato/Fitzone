@@ -5,6 +5,16 @@
  * Acesse via: /api/index.php/v1/exercises
  */
 
+// Log de debug
+$logFile = __DIR__ . '/../backend/storage/logs/api-debug.log';
+$logMessage = date('Y-m-d H:i:s') . " - API Request\n";
+$logMessage .= "REQUEST_URI: " . ($_SERVER['REQUEST_URI'] ?? 'N/A') . "\n";
+$logMessage .= "PATH_INFO: " . ($_SERVER['PATH_INFO'] ?? 'N/A') . "\n";
+$logMessage .= "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'N/A') . "\n";
+$logMessage .= "HTTP_ACCEPT: " . ($_SERVER['HTTP_ACCEPT'] ?? 'N/A') . "\n";
+$logMessage .= "---\n";
+file_put_contents($logFile, $logMessage, FILE_APPEND);
+
 // Capturar a URI da requisição
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 
@@ -27,6 +37,9 @@ if (strpos($apiPath, '/api/v1') !== 0) {
     $pathWithoutApi = preg_replace('#^/api#', '', $apiPath);
     $apiPath = '/api/v1' . ($pathWithoutApi === '/' ? '' : $pathWithoutApi);
 }
+
+// Log do caminho processado
+file_put_contents($logFile, "Processed API Path: $apiPath\n---\n", FILE_APPEND);
 
 // Caminho para o Laravel
 $laravelPath = dirname(__DIR__) . '/backend/public/index.php';

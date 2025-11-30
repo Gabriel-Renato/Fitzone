@@ -41,15 +41,30 @@ async function handleLogin(e) {
     showLoading();
 
     try {
-        const response = await fetch(`${window.API_URL}/login`, {
+        const url = `${window.API_URL}/login`;
+        console.log('🔐 [handleLogin] Fazendo login:', url);
+        console.log('🔐 [handleLogin] Email:', email);
+        
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify({ email, password })
         });
+        
+        console.log('🔐 [handleLogin] Response status:', response.status);
+        console.log('🔐 [handleLogin] Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('❌ [handleLogin] Response não OK:', response.status, text);
+            throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+        }
 
         const data = await response.json();
+        console.log('🔐 [handleLogin] Resposta recebida:', data);
 
         if (data.success) {
             // Salvar token e user no localStorage

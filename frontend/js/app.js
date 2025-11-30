@@ -54,22 +54,38 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initializeApp() {
+    console.log('🚀 [initializeApp] Iniciando aplicação...');
+    console.log('🚀 [initializeApp] API_URL:', window.API_URL);
+    console.log('🚀 [initializeApp] Token:', localStorage.getItem('token') ? 'Presente' : 'Ausente');
+    console.log('🚀 [initializeApp] User:', localStorage.getItem('user') || 'Não encontrado');
+    
     showLoading();
     try {
+        console.log('🚀 [initializeApp] Carregando exercícios...');
         await loadExercises();
+        
+        console.log('🚀 [initializeApp] Carregando treinos...');
         await loadWorkouts();
+        
+        console.log('🚀 [initializeApp] Carregando planos...');
         await loadWorkoutPlans();
+        
+        console.log('🚀 [initializeApp] Carregando grupos musculares...');
         await loadMuscleGroups();
+        
+        console.log('✅ [initializeApp] Todos os dados carregados com sucesso!');
     } catch (error) {
+        console.error('❌ [initializeApp] Erro ao inicializar:', error);
         // Se receber 401 (não autenticado), redirecionar para login
-        if (error.message && error.message.includes('401')) {
+        if (error.message && (error.message.includes('401') || error.message.includes('Unauthorized'))) {
+            console.warn('⚠️ [initializeApp] Não autenticado, redirecionando para login...');
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = 'login.html';
             return;
         }
-        showError('Erro ao carregar dados');
-        console.error(error);
+        showError('Erro ao carregar dados: ' + error.message);
+        console.error('❌ [initializeApp] Erro completo:', error);
     } finally {
         hideLoading();
     }
@@ -98,25 +114,43 @@ function showSection(sectionId) {
 
 // API Calls - Exercises
 async function loadExercises() {
+    const url = `${window.API_URL}/exercises`;
+    console.log('🔵 [loadExercises] Iniciando requisição:', url);
+    
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${window.API_URL}/exercises`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
-            }
-        });
+        console.log('🔵 [loadExercises] Token:', token ? 'Presente' : 'Ausente');
+        
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+        };
+        console.log('🔵 [loadExercises] Headers:', headers);
+        
+        const response = await fetch(url, { headers });
+        console.log('🔵 [loadExercises] Response status:', response.status);
+        console.log('🔵 [loadExercises] Response headers:', Object.fromEntries(response.headers.entries()));
         
         if (response.status === 401) {
+            console.error('❌ [loadExercises] 401 Unauthorized');
             throw new Error('401 Unauthorized');
         }
         
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('❌ [loadExercises] Response não OK:', response.status, text);
+            throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+        }
+        
         const data = await response.json();
-        exercises = data.data;
+        console.log('✅ [loadExercises] Dados recebidos:', data);
+        exercises = data.data || [];
+        console.log('✅ [loadExercises] Exercícios carregados:', exercises.length);
         renderExercises();
         populateExerciseSelect();
     } catch (error) {
-        console.error('Erro ao carregar exercícios:', error);
+        console.error('❌ [loadExercises] Erro completo:', error);
+        console.error('❌ [loadExercises] Stack:', error.stack);
         throw error;
     }
 }
@@ -236,30 +270,47 @@ async function deleteExercise(id) {
 
 // API Calls - Workouts
 async function loadWorkouts() {
+    const userId = getUserId();
+    if (!userId) {
+        console.error('❌ [loadWorkouts] User ID não encontrado');
+        throw new Error('401 Unauthorized');
+    }
+    
+    const url = `${window.API_URL}/workouts?user_id=${userId}`;
+    console.log('🟢 [loadWorkouts] Iniciando requisição:', url);
+    
     try {
         const token = localStorage.getItem('token');
-        const userId = getUserId();
-        if (!userId) {
-            throw new Error('401 Unauthorized');
-        }
+        console.log('🟢 [loadWorkouts] Token:', token ? 'Presente' : 'Ausente');
         
-        const response = await fetch(`${window.API_URL}/workouts?user_id=${userId}`, {
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
             }
         });
         
+        console.log('🟢 [loadWorkouts] Response status:', response.status);
+        
         if (response.status === 401) {
+            console.error('❌ [loadWorkouts] 401 Unauthorized');
             throw new Error('401 Unauthorized');
         }
         
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('❌ [loadWorkouts] Response não OK:', response.status, text);
+            throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+        }
+        
         const data = await response.json();
-        workouts = data.data;
+        console.log('✅ [loadWorkouts] Dados recebidos:', data);
+        workouts = data.data || [];
+        console.log('✅ [loadWorkouts] Treinos carregados:', workouts.length);
         renderWorkouts();
         populateWorkoutSelect();
     } catch (error) {
-        console.error('Erro ao carregar treinos:', error);
+        console.error('❌ [loadWorkouts] Erro completo:', error);
         throw error;
     }
 }
@@ -376,29 +427,46 @@ async function deleteWorkout(id) {
 
 // API Calls - Workout Plans
 async function loadWorkoutPlans() {
+    const userId = getUserId();
+    if (!userId) {
+        console.error('❌ [loadWorkoutPlans] User ID não encontrado');
+        throw new Error('401 Unauthorized');
+    }
+    
+    const url = `${window.API_URL}/workout-plans?user_id=${userId}`;
+    console.log('🟡 [loadWorkoutPlans] Iniciando requisição:', url);
+    
     try {
         const token = localStorage.getItem('token');
-        const userId = getUserId();
-        if (!userId) {
-            throw new Error('401 Unauthorized');
-        }
+        console.log('🟡 [loadWorkoutPlans] Token:', token ? 'Presente' : 'Ausente');
         
-        const response = await fetch(`${window.API_URL}/workout-plans?user_id=${userId}`, {
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
             }
         });
         
+        console.log('🟡 [loadWorkoutPlans] Response status:', response.status);
+        
         if (response.status === 401) {
+            console.error('❌ [loadWorkoutPlans] 401 Unauthorized');
             throw new Error('401 Unauthorized');
         }
         
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('❌ [loadWorkoutPlans] Response não OK:', response.status, text);
+            throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+        }
+        
         const data = await response.json();
-        workoutPlans = data.data;
+        console.log('✅ [loadWorkoutPlans] Dados recebidos:', data);
+        workoutPlans = data.data || [];
+        console.log('✅ [loadWorkoutPlans] Planos carregados:', workoutPlans.length);
         renderWeeklyPlan();
     } catch (error) {
-        console.error('Erro ao carregar planos:', error);
+        console.error('❌ [loadWorkoutPlans] Erro completo:', error);
         throw error;
     }
 }

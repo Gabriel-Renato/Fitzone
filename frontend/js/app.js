@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (!token) {
         // Se não estiver autenticado, redirecionar para login
-        window.location.href = 'login.html';
+        window.location.href = 'landing.html';
         return;
     }
     
@@ -83,7 +83,7 @@ async function initializeApp() {
             console.warn('⚠️ [initializeApp] Não autenticado, redirecionando para login...');
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = 'login.html';
+            window.location.href = 'landing.html';
             return;
         }
         showError('Erro ao carregar dados: ' + error.message);
@@ -380,7 +380,7 @@ async function createWorkout(data) {
         const userId = getUserId();
         if (!userId) {
             showError('Usuário não autenticado');
-            window.location.href = 'login.html';
+            window.location.href = 'landing.html';
             return;
         }
         
@@ -511,7 +511,7 @@ async function createWorkoutPlan(data) {
         const userId = getUserId();
         if (!userId) {
             showError('Usuário não autenticado');
-            window.location.href = 'login.html';
+            window.location.href = 'landing.html';
             return;
         }
         
@@ -585,7 +585,7 @@ function setupForms() {
         const userId = getUserId();
         if (!userId) {
             showError('Usuário não autenticado');
-            window.location.href = 'login.html';
+            window.location.href = 'landing.html';
             return;
         }
         
@@ -607,7 +607,7 @@ function setupForms() {
         const userId = getUserId();
         if (!userId) {
             showError('Usuário não autenticado');
-            window.location.href = 'login.html';
+            window.location.href = 'landing.html';
             return;
         }
         

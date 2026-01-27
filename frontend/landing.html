@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitZone - Organize seus treinos de forma inteligente</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="landing-page">
+    <!-- Header -->
+    <header class="landing-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>💪 FitZone</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#inicio" class="nav-link">Início</a></li>
+                        <li><a href="#funcionalidades" class="nav-link">Funcionalidades</a></li>
+                        <li><a href="#personal" class="nav-link">Para Personais</a></li>
+                        <li><a href="#clientes" class="nav-link">Para Alunos</a></li>
+                        <li><button class="btn btn-primary" onclick="scrollToLogin()">Login</button></li>
+                    </ul>
+                </nav>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Organize seus treinos de forma <span class="highlight">inteligente</span></h1>
+                    <p class="hero-subtitle">
+                        FitZone é a plataforma completa para personal trainers e alunos gerenciarem treinos, 
+                        acompanharem progresso e alcançarem resultados extraordinários.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-large" onclick="scrollToLogin()">
+                            Entrar no Sistema
+                        </button>
+                        <a href="#funcionalidades" class="btn btn-secondary btn-large">
+                            Conhecer Funcionalidades
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-illustration">
+                        <div class="illustration-circle circle-1"></div>
+                        <div class="illustration-circle circle-2"></div>
+                        <div class="illustration-circle circle-3"></div>
+                        <div class="illustration-icon">🏋️‍♂️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Funcionalidades Section -->
+    <section id="funcionalidades" class="features-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2 class="section-title">Funcionalidades</h2>
+                <p class="section-subtitle">Tudo que você precisa para gerenciar seus treinos com eficiência</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3 class="feature-title">Planejamento Semanal</h3>
+                    <p class="feature-description">
+                        Organize seus treinos por dias da semana e grupos musculares de forma intuitiva e visual.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3 class="feature-title">Check-in de Exercícios</h3>
+                    <p class="feature-description">
+                        Sistema interativo de checklist para acompanhar o progresso de cada treino em tempo real.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Estatísticas de Desempenho</h3>
+                    <p class="feature-description">
+                        Visualize gráficos e métricas detalhadas sobre seu progresso e evolução ao longo do tempo.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">Histórico Completo</h3>
+                    <p class="feature-description">
+                        Acesse todo o histórico de treinos realizados com avaliações e notas para análise completa.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3 class="feature-title">Avaliação de Treinos</h3>
+                    <p class="feature-description">
+                        Sistema de avaliação por estrelas para registrar a qualidade e dificuldade de cada treino.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3 class="feature-title">Salvamento Automático</h3>
+                    <p class="feature-description">
+                        Seu progresso é salvo automaticamente, garantindo que nenhum dado seja perdido.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Para Personal Trainer Section -->
+    <section id="personal" class="personal-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2 class="section-title">Para Personal Trainer</h2>
+                <p class="section-subtitle">Gerencie seus clientes e treinos com total controle</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">👥</div>
+                    <h3>Gerenciar Clientes</h3>
+                    <p>Cadastre e gerencie todos os seus clientes em um só lugar. Visualize informações completas e histórico de cada um.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🏋️</div>
+                    <h3>Criar e Atribuir Treinos</h3>
+                    <p>Crie treinos personalizados com exercícios específicos e atribua aos seus clientes de forma rápida e eficiente.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📈</div>
+                    <h3>Visualizar Progresso</h3>
+                    <p>Acompanhe o progresso de cada cliente com estatísticas detalhadas, gráficos e relatórios completos.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Estatísticas Detalhadas</h3>
+                    <p>Tenha acesso a métricas avançadas sobre frequência, desempenho e evolução de todos os seus clientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Para Clientes Section -->
+    <section id="clientes" class="clients-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2 class="section-title">Para Clientes</h2>
+                <p class="section-subtitle">Acompanhe seus treinos e alcance seus objetivos</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">📅</div>
+                    <h3>Visualizar Plano Semanal</h3>
+                    <p>Veja toda a sua rotina de treinos organizada por dias da semana de forma clara e intuitiva.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✅</div>
+                    <h3>Checklist Interativo</h3>
+                    <p>Marque os exercícios conforme você os realiza. Interface simples e rápida para check-in durante o treino.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">💾</div>
+                    <h3>Salvar Progresso Automaticamente</h3>
+                    <p>Seu progresso é salvo automaticamente, sem necessidade de ações manuais. Foque apenas em treinar.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Histórico e Estatísticas Pessoais</h3>
+                    <p>Acompanhe sua evolução com gráficos, estatísticas e histórico completo de todos os seus treinos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login" class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h2>💪 FitZone</h2>
+                        <p>Entre no sistema para começar</p>
+                    </div>
+
+                    <form id="loginForm" class="login-form">
+                        <div id="loginError" class="error-message" style="display: none;"></div>
+                        
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" class="input" placeholder="seu@email.com" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Senha</label>
+                            <input type="password" id="password" class="input" placeholder="••••••••" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block btn-large">
+                            Entrar
+                        </button>
+                    </form>
+
+                    <div class="login-footer">
+                        <p>Não tem uma conta? <a href="#" onclick="showRegisterInfo()">Entre em contato</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>💪 FitZone</h3>
+                    <p>Sistema de Gerenciamento de Treinos</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navegação</h4>
+                        <ul>
+                            <li><a href="#inicio">Início</a></li>
+                            <li><a href="#funcionalidades">Funcionalidades</a></li>
+                            <li><a href="#personal">Para Personais</a></li>
+                            <li><a href="#clientes">Para Alunos</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Sistema</h4>
+                        <ul>
+                            <li><a href="#login">Login</a></li>
+                            <li><a href="#" onclick="scrollToLogin()">Acessar Sistema</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitZone. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="js/landing.js"></script>
+</body>
+</html>

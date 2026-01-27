@@ -247,27 +247,34 @@ function showLoginSuccess(message) {
  * Função global para ser chamada de qualquer lugar
  */
 function redirectToDashboard() {
+    const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
-    if (!userStr) {
-        // Se não tem usuário, mostrar formulário de login
-        const loginForm = document.getElementById('loginForm');
-        const loggedInContent = document.querySelector('.logged-in-content');
-        if (loginForm) loginForm.style.display = 'block';
-        if (loggedInContent) loggedInContent.remove();
+    
+    if (!token || !userStr) {
+        window.location.href = 'landing.html';
         return;
     }
     
     try {
         const user = JSON.parse(userStr);
+        // Verificar role em diferentes formatos possíveis
+        const role = user.role || user.type || user.user_type || 'client';
         
-        if (user.role === 'personal') {
+        console.log('🔐 [redirectToDashboard] User role:', role);
+        console.log('🔐 [redirectToDashboard] User data:', user);
+        
+        // Normalizar o role para comparação
+        const normalizedRole = role.toLowerCase().trim();
+        
+        if (normalizedRole === 'personal' || normalizedRole === 'trainer' || normalizedRole === 'personal_trainer') {
+            console.log('🔐 [redirectToDashboard] Redirecionando para dashboard-personal.html');
             window.location.href = 'dashboard-personal.html';
         } else {
+            console.log('🔐 [redirectToDashboard] Redirecionando para dashboard-cliente.html');
             window.location.href = 'dashboard-cliente.html';
         }
     } catch (error) {
-        console.error('Erro ao redirecionar:', error);
-        // Em caso de erro, redirecionar para landing sem recarregar
+        console.error('❌ [redirectToDashboard] Erro ao redirecionar:', error);
         window.location.href = 'landing.html';
     }
 }

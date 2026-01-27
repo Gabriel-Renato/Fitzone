@@ -51,7 +51,7 @@ try {
 
   // 2. Copiar assets (imagens, favicon)
   console.log('\n🖼️  Copiando assets...');
-  const assets = ['favicon.ico', 'logo.redonda.png'];
+  const assets = ['favicon.ico', 'logo.nova.png'];
   assets.forEach(asset => {
     if (fs.existsSync(path.join(__dirname, asset))) {
       copyFile(path.join(__dirname, asset), path.join(distDir, asset));

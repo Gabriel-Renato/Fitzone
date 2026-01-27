@@ -15,6 +15,18 @@ if (typeof window.API_URL === 'undefined') {
 
 // Setup da landing page (sempre acessível, sem necessidade de login)
 document.addEventListener('DOMContentLoaded', () => {
+    // Garantir que a página comece no topo
+    window.scrollTo(0, 0);
+    
+    // Remover hash da URL se existir (evita scroll automático)
+    if (window.location.hash) {
+        // Se o hash for #login, remover para não fazer scroll automático
+        if (window.location.hash === '#login') {
+            history.replaceState(null, null, window.location.pathname);
+            window.scrollTo(0, 0);
+        }
+    }
+    
     // Verificar se usuário está logado e mostrar opções apropriadas
     checkUserStatus();
     
@@ -291,6 +303,16 @@ function setupSmoothScroll() {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
+            
+            // Se for #inicio, ir para o topo
+            if (targetId === 'inicio' || targetId === '') {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                return;
+            }
+            
             const targetSection = document.getElementById(targetId);
             
             if (targetSection) {
@@ -304,6 +326,18 @@ function setupSmoothScroll() {
             }
         });
     });
+    
+    // Link do logo também vai para o topo
+    const logoLink = document.querySelector('.logo-link');
+    if (logoLink) {
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 }
 
 /**

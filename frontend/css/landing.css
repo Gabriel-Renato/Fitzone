@@ -16,6 +16,8 @@
     right: 0;
     z-index: 1000;
     transition: var(--transition);
+    height: 90px;
+    max-height: 90px;
 }
 
 .landing-header .header-content {
@@ -23,10 +25,53 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
+    height: 100%;
+    max-height: 90px;
+}
+
+.landing-header .logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    max-height: 90px;
+}
+
+.landing-header .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.landing-header .logo-link:hover {
+    transform: scale(1.02);
+}
+
+.landing-header .logo-image {
+    width: 65px !important;
+    height: 65px !important;
+    object-fit: contain !important;
+    max-width: 65px !important;
+    max-height: 65px !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+}
+
+/* Forçar tamanho da imagem logo.nova.png */
+.landing-header img.logo-image,
+.landing-header img[src*="logo.nova"],
+.landing-header .logo-link img {
+    width: 65px !important;
+    height: 65px !important;
+    max-width: 65px !important;
+    max-height: 65px !important;
+    object-fit: contain !important;
 }
 
 .landing-header .logo h1 {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--primary-color);
     margin: 0;
@@ -77,7 +122,7 @@
 .hero-section {
     padding: 120px 0 80px;
     background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
-    margin-top: 70px;
+    margin-top: 90px;
 }
 
 .hero-content {
@@ -146,56 +191,406 @@
     position: relative;
     width: 400px;
     height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
 }
 
 .illustration-circle {
     position: absolute;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    opacity: 0.1;
-    animation: pulse 3s ease-in-out infinite;
+    opacity: 0.15;
+    animation: energyPulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.15;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.25;
+        transform: scale(1.05);
+    }
+}
+
+/* Animação melhorada para círculos de energia */
+@keyframes energyPulse {
+    0%, 100% {
+        opacity: 0.15;
+        transform: scale(1);
+    }
+    25% {
+        opacity: 0.2;
+        transform: scale(1.03);
+    }
+    50% {
+        opacity: 0.28;
+        transform: scale(1.08);
+    }
+    75% {
+        opacity: 0.2;
+        transform: scale(1.03);
+    }
 }
 
 .circle-1 {
-    width: 300px;
-    height: 300px;
-    top: 50px;
-    left: 50px;
+    width: 350px;
+    height: 350px;
+    top: 25px;
+    left: 25px;
     animation-delay: 0s;
 }
 
 .circle-2 {
-    width: 200px;
-    height: 200px;
-    top: 100px;
-    left: 100px;
+    width: 280px;
+    height: 280px;
+    top: 60px;
+    left: 60px;
     animation-delay: 1s;
 }
 
 .circle-3 {
-    width: 150px;
-    height: 150px;
-    top: 125px;
-    left: 125px;
+    width: 220px;
+    height: 220px;
+    top: 90px;
+    left: 90px;
     animation-delay: 2s;
 }
 
-.illustration-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 8rem;
+.fitness-illustration {
+    position: relative;
     z-index: 10;
-    animation: float 3s ease-in-out infinite;
+    width: 100%;
+    height: 100%;
+    max-width: 380px;
+    max-height: 380px;
+    min-width: 300px;
+    min-height: 300px;
+    filter: drop-shadow(0 10px 30px rgba(60, 115, 51, 0.3));
+    animation: illustrationEntrance 1s ease-out;
+    overflow: visible;
+    background: transparent;
 }
 
-@keyframes float {
+/* Animação sutil de respiração para toda a ilustração */
+@keyframes illustrationBreath {
     0%, 100% {
-        transform: translate(-50%, -50%) translateY(0);
+        transform: scale(1);
     }
     50% {
-        transform: translate(-50%, -50%) translateY(-20px);
+        transform: scale(1.02);
+    }
+}
+
+.fitness-illustration {
+    animation: illustrationEntrance 1s ease-out, illustrationBreath 4s ease-in-out infinite 1s;
+}
+
+/* Garantir que todos os elementos SVG sejam visíveis */
+.fitness-illustration circle,
+.fitness-illustration ellipse,
+.fitness-illustration line,
+.fitness-illustration g {
+    visibility: visible;
+    display: block;
+    pointer-events: none;
+}
+
+/* Estilos específicos para os pesos */
+.fitness-illustration .weight-left,
+.fitness-illustration .weight-right {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes illustrationEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Animação do personagem - movimento de agachamento */
+.fitness-illustration .head {
+    animation: headBounce 2.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.fitness-illustration .torso {
+    animation: torsoMove 2.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.fitness-illustration .arm-left {
+    animation: armSwing 2.5s ease-in-out infinite;
+    transform-origin: top left;
+}
+
+.fitness-illustration .arm-right {
+    animation: armSwing 2.5s ease-in-out infinite;
+    transform-origin: top right;
+    animation-delay: 0.1s;
+}
+
+.fitness-illustration .barbell {
+    animation: barbellFloat 2.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.fitness-illustration .weight-left {
+    animation: weightSwing 2.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.fitness-illustration .weight-right {
+    animation: weightSwing 2.5s ease-in-out infinite;
+    transform-origin: center;
+    animation-delay: 0.15s;
+}
+
+/* Animação individual para os discos dos pesos */
+.fitness-illustration .weight-left circle:nth-child(1),
+.fitness-illustration .weight-right circle:nth-child(1) {
+    animation: weightRotate 2.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.fitness-illustration .weight-left circle:nth-child(2),
+.fitness-illustration .weight-right circle:nth-child(2) {
+    animation: weightRotate 2.5s ease-in-out infinite;
+    transform-origin: center;
+    animation-delay: 0.1s;
+}
+
+.fitness-illustration .weight-left circle:nth-child(3),
+.fitness-illustration .weight-right circle:nth-child(3) {
+    animation: weightRotate 2.5s ease-in-out infinite;
+    transform-origin: center;
+    animation-delay: 0.2s;
+}
+
+.fitness-illustration .weight-left circle:nth-child(4),
+.fitness-illustration .weight-right circle:nth-child(4) {
+    animation: weightRotate 2.5s ease-in-out infinite;
+    transform-origin: center;
+    animation-delay: 0.3s;
+}
+
+.fitness-illustration .leg-left {
+    animation: legSquat 2.5s ease-in-out infinite;
+    transform-origin: top center;
+}
+
+.fitness-illustration .leg-right {
+    animation: legSquat 2.5s ease-in-out infinite;
+    transform-origin: top center;
+    animation-delay: 0.1s;
+}
+
+.fitness-illustration .foot-left,
+.fitness-illustration .foot-right {
+    animation: footStable 2.5s ease-in-out infinite;
+}
+
+/* Partículas de energia melhoradas */
+.fitness-illustration .particle {
+    animation: particleFloat 4s ease-in-out infinite;
+    filter: blur(0.5px);
+}
+
+.fitness-illustration .particle-1 {
+    animation-delay: 0s;
+    animation-duration: 3.5s;
+}
+
+.fitness-illustration .particle-2 {
+    animation-delay: 0.8s;
+    animation-duration: 4s;
+}
+
+.fitness-illustration .particle-3 {
+    animation-delay: 1.6s;
+    animation-duration: 3.8s;
+}
+
+.fitness-illustration .particle-4 {
+    animation-delay: 2.4s;
+    animation-duration: 4.2s;
+}
+
+.fitness-illustration .particle-5 {
+    animation-delay: 0.4s;
+    animation-duration: 3.6s;
+}
+
+.fitness-illustration .particle-6 {
+    animation-delay: 1.2s;
+    animation-duration: 4.1s;
+}
+
+.fitness-illustration .particle-7 {
+    animation-delay: 2.0s;
+    animation-duration: 3.9s;
+}
+
+.fitness-illustration .particle-8 {
+    animation-delay: 2.8s;
+    animation-duration: 4.3s;
+}
+
+/* Keyframes para animações profissionais melhoradas */
+@keyframes headBounce {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-2px) rotate(1deg);
+    }
+    50% {
+        transform: translateY(-4px) rotate(2deg);
+    }
+    75% {
+        transform: translateY(-2px) rotate(1deg);
+    }
+}
+
+@keyframes torsoMove {
+    0%, 100% {
+        transform: translateY(0) scaleY(1);
+    }
+    25% {
+        transform: translateY(2px) scaleY(0.98);
+    }
+    50% {
+        transform: translateY(6px) scaleY(0.92);
+    }
+    75% {
+        transform: translateY(2px) scaleY(0.98);
+    }
+}
+
+@keyframes armSwing {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(2px) rotate(1deg);
+    }
+    50% {
+        transform: translateY(4px) rotate(2deg);
+    }
+    75% {
+        transform: translateY(2px) rotate(1deg);
+    }
+}
+
+@keyframes barbellFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-2px) rotate(-1deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(-2deg);
+    }
+    75% {
+        transform: translateY(-2px) rotate(-1deg);
+    }
+}
+
+@keyframes weightRotate {
+    0%, 100% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(-2deg) scale(1.03);
+    }
+    50% {
+        transform: rotate(-4deg) scale(1.06);
+    }
+    75% {
+        transform: rotate(-2deg) scale(1.03);
+    }
+}
+
+@keyframes weightSwing {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-2px) rotate(-1deg);
+    }
+    50% {
+        transform: translateY(-4px) rotate(-2deg);
+    }
+    75% {
+        transform: translateY(-2px) rotate(-1deg);
+    }
+}
+
+@keyframes legSquat {
+    0%, 100% {
+        transform: translateY(0) scaleY(1) rotate(0deg);
+    }
+    25% {
+        transform: translateY(4px) scaleY(0.95) rotate(1deg);
+    }
+    50% {
+        transform: translateY(10px) scaleY(0.85) rotate(3deg);
+    }
+    75% {
+        transform: translateY(4px) scaleY(0.95) rotate(1deg);
+    }
+}
+
+@keyframes footStable {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(3px) rotate(1deg);
+    }
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.9;
+    }
+    25% {
+        transform: translate(8px, -15px) scale(1.1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translate(15px, -30px) scale(1.3);
+        opacity: 0.5;
+    }
+    75% {
+        transform: translate(8px, -45px) scale(1.1);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translate(-5px, -60px) scale(0.7);
+        opacity: 0;
+    }
+}
+
+/* Animação adicional para círculos de energia */
+@keyframes energyPulse {
+    0%, 100% {
+        opacity: 0.15;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.25;
+        transform: scale(1.08);
     }
 }
 
@@ -554,9 +949,33 @@ html {
 }
 
 @media (max-width: 768px) {
+    .landing-header .logo-image,
+    .landing-header img.logo-image,
+    .landing-header img[src*="logo.nova"],
+    .landing-header .logo-link img {
+        width: 14px !important;
+        height: 14px !important;
+        max-width: 14px !important;
+        max-height: 14px !important;
+        object-fit: contain !important;
+    }
+    
+    .landing-header .logo h1 {
+        font-size: 0.9rem;
+    }
+    
+    .landing-header {
+        height: 90px;
+        max-height: 90px;
+    }
+    
+    .landing-header .header-content {
+        max-height: 90px;
+    }
+    
     .landing-header .nav {
         position: fixed;
-        top: 70px;
+        top: 90px;
         left: 0;
         right: 0;
         background: var(--white);
@@ -565,7 +984,7 @@ html {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         z-index: 999;
-        max-height: calc(100vh - 70px);
+        max-height: calc(100vh - 90px);
         overflow-y: auto;
     }
     
@@ -625,23 +1044,30 @@ html {
         height: 300px;
     }
     
-    .illustration-icon {
-        font-size: 5rem;
+    .fitness-illustration {
+        max-width: 280px;
+        max-height: 280px;
     }
     
     .circle-1 {
-        width: 200px;
-        height: 200px;
+        width: 280px;
+        height: 280px;
+        top: 10px;
+        left: 10px;
     }
     
     .circle-2 {
-        width: 150px;
-        height: 150px;
+        width: 220px;
+        height: 220px;
+        top: 40px;
+        left: 40px;
     }
     
     .circle-3 {
-        width: 100px;
-        height: 100px;
+        width: 170px;
+        height: 170px;
+        top: 65px;
+        left: 65px;
     }
     
     .section-title {

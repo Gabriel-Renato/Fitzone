@@ -5,11 +5,11 @@
 
 // Configuração da API
 window.APP_CONFIG = {
-    // URL da API - usar /api/index.php/v1 para InfinityFree
-    API_URL: 'https://fitzone.wuaze.com/api/index.php/v1',
+    // URL da API - usar /backend/public/api/v1 para acessar diretamente o Laravel
+    API_URL: 'https://fitzone.wuaze.com/backend/public/api/v1',
     
-    // URL alternativa caso mod_rewrite funcione
-    API_URL_ALTERNATIVE: 'https://fitzone.wuaze.com/api/v1',
+    // URL alternativa caso mod_rewrite não funcione
+    API_URL_ALTERNATIVE: 'https://fitzone.wuaze.com/api/index.php/v1',
     
     // Ambiente
     ENV: 'production',

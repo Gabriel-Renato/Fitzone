@@ -41,7 +41,7 @@ function copyDir(src, dest) {
 try {
   // 1. Copiar arquivos HTML
   console.log('📄 Copiando arquivos HTML...');
-  const htmlFiles = ['index.html', 'login.html', 'dashboard-personal.html', 'dashboard-cliente.html'];
+  const htmlFiles = ['index.html', 'landing.html', 'login.html', 'dashboard-personal.html', 'dashboard-cliente.html'];
   htmlFiles.forEach(file => {
     if (fs.existsSync(path.join(__dirname, file))) {
       copyFile(path.join(__dirname, file), path.join(distDir, file));
@@ -49,9 +49,9 @@ try {
     }
   });
 
-  // 2. Copiar assets (imagens, favicon)
+  // 2. Copiar assets (imagens, favicon, config)
   console.log('\n🖼️  Copiando assets...');
-  const assets = ['favicon.ico', 'logo.redonda.png'];
+  const assets = ['favicon.ico', 'logo.nova.png', 'config.js'];
   assets.forEach(asset => {
     if (fs.existsSync(path.join(__dirname, asset))) {
       copyFile(path.join(__dirname, asset), path.join(distDir, asset));
@@ -66,7 +66,7 @@ try {
     fs.mkdirSync(jsDir, { recursive: true });
   }
 
-  const jsFiles = ['app.js', 'auth.js', 'dashboard-cliente.js', 'dashboard-personal.js'];
+  const jsFiles = ['app.js', 'auth.js', 'landing.js', 'dashboard-cliente.js', 'dashboard-personal.js'];
   jsFiles.forEach(file => {
     const srcPath = path.join(__dirname, 'js', file);
     if (fs.existsSync(srcPath)) {
@@ -97,25 +97,28 @@ try {
     fs.mkdirSync(cssDir, { recursive: true });
   }
 
-  const cssFile = path.join(__dirname, 'css', 'styles.css');
-  if (fs.existsSync(cssFile)) {
-    const destCssFile = path.join(cssDir, 'styles.css');
-    try {
-      // Minificar com clean-css
-      execSync(
-        `npx cleancss -o "${destCssFile}" "${cssFile}"`,
-        { encoding: 'utf-8', stdio: 'pipe' }
-      );
-      const originalSize = fs.statSync(cssFile).size;
-      const minifiedSize = fs.statSync(destCssFile).size;
-      const reduction = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
-      console.log(`   ✓ styles.css (${(originalSize / 1024).toFixed(1)}KB → ${(minifiedSize / 1024).toFixed(1)}KB, -${reduction}%)`);
-    } catch (error) {
-      // Se clean-css falhar, copiar o arquivo original
-      console.log(`   ⚠ styles.css (copiado sem minificação - erro: ${error.message})`);
-      copyFile(cssFile, destCssFile);
+  const cssFiles = ['styles.css', 'landing.css'];
+  cssFiles.forEach(file => {
+    const cssFile = path.join(__dirname, 'css', file);
+    if (fs.existsSync(cssFile)) {
+      const destCssFile = path.join(cssDir, file);
+      try {
+        // Minificar com clean-css
+        execSync(
+          `npx cleancss -o "${destCssFile}" "${cssFile}"`,
+          { encoding: 'utf-8', stdio: 'pipe' }
+        );
+        const originalSize = fs.statSync(cssFile).size;
+        const minifiedSize = fs.statSync(destCssFile).size;
+        const reduction = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
+        console.log(`   ✓ ${file} (${(originalSize / 1024).toFixed(1)}KB → ${(minifiedSize / 1024).toFixed(1)}KB, -${reduction}%)`);
+      } catch (error) {
+        // Se clean-css falhar, copiar o arquivo original
+        console.log(`   ⚠ ${file} (copiado sem minificação - erro: ${error.message})`);
+        copyFile(cssFile, destCssFile);
+      }
     }
-  }
+  });
 
   // 5. Estatísticas finais
   console.log('\n📊 Estatísticas do build:');

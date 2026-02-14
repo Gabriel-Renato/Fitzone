@@ -32,7 +32,7 @@ async function checkAuthentication() {
     await waitForAuth();
     
 if (!isAuthenticated()) {
-    window.location.href = 'login.html';
+    window.location.href = 'landing.html';
         return false;
 }
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (!user) {
         console.error('Usuário não encontrado');
-        window.location.href = 'login.html';
+        window.location.href = 'landing.html';
         return;
     }
     

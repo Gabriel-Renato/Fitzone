@@ -1,0 +1,17 @@
+# Forçar landing.html como página inicial
+DirectoryIndex landing.html index.html
+
+# Desabilitar cache para index.html e login.html
+<FilesMatch "^(index|login)\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# Redirecionar login.html para landing.html
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^login\.html$ landing.html [R=301,L]
+    # Redirecionar raiz para landing.html
+    RewriteRule ^$ landing.html [R=301,L]
+</IfModule>

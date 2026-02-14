@@ -9,27 +9,58 @@ if (typeof window.APP_CONFIG !== 'undefined' && window.APP_CONFIG.API_URL) {
 
 // Verificar se já está logado
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    const currentPage = window.location.pathname.split('/').pop();
+    const pathname = window.location.pathname;
+    const currentPage = pathname.split('/').pop() || '';
+    const isRoot = pathname === '/' || pathname.endsWith('/') || currentPage === '' || currentPage === 'index.html';
     
-    // Se está em página de login e já tem token, redirecionar para dashboard
+    // Verificar se está na landing page ANTES de qualquer outra lógica
+    const isLandingPage = document.querySelector('.landing-page') !== null || 
+                          document.getElementById('login') !== null ||
+                          pathname.includes('landing.html') ||
+                          currentPage === 'landing.html';
+    
+    // Se está na landing page, NÃO fazer nenhuma verificação de autenticação
+    // A landing page é sempre pública e não deve ser redirecionada
+    if (isLandingPage) {
+        // Apenas setup do formulário de login se existir (mas não na landing, ela tem seu próprio)
+        // A landing page usa landing.js para gerenciar o login
+        return;
+    }
+    
+    const token = localStorage.getItem('token');
+    
+    // Se está na raiz ou index.html, redirecionar para landing (se não for landing já)
+    if (isRoot && !isLandingPage) {
+        // index.html já tem redirecionamento, mas garantir aqui também
+        if (currentPage === 'index.html' || isRoot) {
+            window.location.replace('landing.html');
+            return;
+        }
+    }
+    
+    // Se está em página de login/register e já tem token, redirecionar para dashboard
     if ((currentPage === 'login.html' || currentPage === 'register.html') && token) {
         redirectToDashboard();
+        return;
     }
     
-    // Se está em página protegida e não tem token, redirecionar para login
-    if (currentPage !== 'login.html' && currentPage !== 'register.html' && currentPage !== '' && !token) {
-        window.location.href = 'login.html';
+    // Se está em página protegida e não tem token, redirecionar para landing
+    const publicPages = ['login.html', 'register.html', 'landing.html', 'index.html', ''];
+    const isPublicPage = publicPages.includes(currentPage) || isRoot;
+    
+    if (!isPublicPage && !token) {
+        window.location.href = 'landing.html';
+        return;
     }
 
-    // Setup formulários
+    // Setup formulários (apenas para login.html e register.html)
     const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
+    if (loginForm && (currentPage === 'login.html')) {
         loginForm.addEventListener('submit', handleLogin);
     }
 
     const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
+    if (registerForm && (currentPage === 'register.html')) {
         registerForm.addEventListener('submit', handleRegister);
     }
 });
@@ -169,14 +200,14 @@ async function logout() {
     
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = 'login.html';
+    window.location.href = 'landing.html';
 }
 
 // Redirecionar para dashboard correto
 function redirectToDashboard() {
     const userStr = localStorage.getItem('user');
     if (!userStr) {
-        window.location.href = 'login.html';
+        window.location.href = 'landing.html';
         return;
     }
     

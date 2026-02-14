@@ -3,219 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitZone - Gerenciamento de Treinos</title>
+    <title>FitZone - Organize seus treinos de forma inteligente</title>
     <link rel="icon" type="image/svg+xml" href="favicon.ico">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <style>
+        /* Forçar tamanho do logo - sobrescreve qualquer outro estilo */
+        .landing-header .logo-image,
+        .landing-header img[src*="logo.nova"],
+        .landing-header .logo-link img {
+            width: 65px !important;
+            height: 65px !important;
+            max-width: 65px !important;
+            max-height: 65px !important;
+            object-fit: contain !important;
+        }
+        @media (max-width: 768px) {
+            .landing-header .logo-image,
+            .landing-header img[src*="logo.nova"],
+            .landing-header .logo-link img {
+                width: 50px !important;
+                height: 50px !important;
+                max-width: 50px !important;
+                max-height: 50px !important;
+            }
+        }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        // Garantir que a página comece no topo ANTES de qualquer coisa
+        (function() {
+            // Scroll para o topo imediatamente
+            window.scrollTo(0, 0);
+            // Remover hash da URL se existir
+            if (window.location.hash === '#login') {
+                history.replaceState(null, null, window.location.pathname);
+            }
+        })();
+    </script>
 </head>
-<body>
+<body class="landing-page">
     <!-- Header -->
-    <header class="header">
+    <header class="landing-header">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <h1>💪 FitZone</h1>
+                    <a href="#inicio" class="logo-link">
+                        <img src="logo.nova.png" alt="FitZone Logo" class="logo-image" style="width: 65px !important; height: 65px !important; max-width: 65px !important; max-height: 65px !important; object-fit: contain !important;">
+                      
+                    </a>
                 </div>
                 <nav class="nav">
                     <ul>
-                        <li><a href="#exercicios" class="nav-link active">Exercícios</a></li>
-                        <li><a href="#treinos" class="nav-link">Meus Treinos</a></li>
-                        <li><a href="#plano" class="nav-link">Plano Semanal</a></li>
+                        <li><a href="#inicio" class="nav-link">Início</a></li>
+                        <li><a href="#funcionalidades" class="nav-link">Funcionalidades</a></li>
+                        <li><a href="#personal" class="nav-link">Para Personais</a></li>
+                        <li><a href="#clientes" class="nav-link">Para Alunos</a></li>
+                        <li><button class="btn btn-primary" onclick="scrollToLogin()">Login</button></li>
                     </ul>
                 </nav>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
+    <!-- Hero Section -->
+    <section id="inicio" class="hero-section">
         <div class="container">
-            <!-- Seção Exercícios -->
-            <section id="exercicios" class="section active">
-                <div class="section-header">
-                    <h2>📋 Biblioteca de Exercícios</h2>
-                    <button class="btn btn-primary" onclick="showAddExerciseModal()">
-                        + Novo Exercício
-                    </button>
-                </div>
-
-                <!-- Filtros -->
-                <div class="filters">
-                    <input type="text" id="searchExercise" class="input" placeholder="🔍 Buscar exercício...">
-                    <select id="filterMuscleGroup" class="select">
-                        <option value="">Todos os Grupos Musculares</option>
-                    </select>
-                </div>
-
-                <!-- Lista de Exercícios -->
-                <div id="exercisesList" class="grid">
-                    <!-- Exercícios serão carregados aqui -->
-                </div>
-            </section>
-
-            <!-- Seção Treinos -->
-            <section id="treinos" class="section">
-                <div class="section-header">
-                    <h2>🏋️ Meus Treinos</h2>
-                    <button class="btn btn-primary" onclick="showCreateWorkoutModal()">
-                        + Criar Treino
-                    </button>
-                </div>
-
-                <!-- Lista de Treinos -->
-                <div id="workoutsList" class="workouts-list">
-                    <!-- Treinos serão carregados aqui -->
-                </div>
-            </section>
-
-            <!-- Seção Plano Semanal -->
-            <section id="plano" class="section">
-                <div class="section-header">
-                    <h2>📅 Plano Semanal</h2>
-                    <button class="btn btn-primary" onclick="showAddPlanModal()">
-                        + Adicionar ao Plano
-                    </button>
-                </div>
-
-                <!-- Plano Semanal -->
-                <div id="weeklyPlan" class="weekly-plan">
-                    <!-- Plano será carregado aqui -->
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Modal Adicionar Exercício -->
-    <div id="exerciseModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Adicionar Exercício</h3>
-                <span class="close" onclick="closeModal('exerciseModal')">&times;</span>
-            </div>
-            <form id="exerciseForm" class="form">
-                <div class="form-group">
-                    <label for="exerciseName">Nome do Exercício</label>
-                    <input type="text" id="exerciseName" class="input" required>
-                </div>
-                <div class="form-group">
-                    <label for="exerciseDescription">Descrição</label>
-                    <textarea id="exerciseDescription" class="textarea" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="exerciseMuscleGroup">Grupo Muscular</label>
-                    <select id="exerciseMuscleGroup" class="select" required>
-                        <option value="">Selecione...</option>
-                        <option value="Peito">Peito</option>
-                        <option value="Costas">Costas</option>
-                        <option value="Pernas">Pernas</option>
-                        <option value="Ombros">Ombros</option>
-                        <option value="Bíceps">Bíceps</option>
-                        <option value="Tríceps">Tríceps</option>
-                        <option value="Abdômen">Abdômen</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="exerciseEquipment">Equipamento</label>
-                    <input type="text" id="exerciseEquipment" class="input">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('exerciseModal')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Criar Treino -->
-    <div id="workoutModal" class="modal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3>Criar Treino</h3>
-                <span class="close" onclick="closeModal('workoutModal')">&times;</span>
-            </div>
-            <form id="workoutForm" class="form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="workoutName">Nome do Treino</label>
-                        <input type="text" id="workoutName" class="input" placeholder="Ex: Treino A - Peito e Tríceps" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="workoutFocus">Foco</label>
-                        <select id="workoutFocus" class="select" required>
-                            <option value="">Selecione...</option>
-                            <option value="Hipertrofia">Hipertrofia</option>
-                            <option value="Força">Força</option>
-                            <option value="Resistência">Resistência</option>
-                            <option value="Definição">Definição</option>
-                        </select>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Organize seus treinos de forma <span class="highlight">inteligente</span></h1>
+                    <p class="hero-subtitle">
+                        FitZone é a plataforma completa para personal trainers e alunos gerenciarem treinos, 
+                        acompanharem progresso e alcançarem resultados extraordinários.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-large" onclick="scrollToLogin()">
+                            Entrar no Sistema
+                        </button>
+                        <a href="#funcionalidades" class="btn btn-secondary btn-large">
+                            Conhecer Funcionalidades
+                        </a>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="workoutDescription">Descrição</label>
-                    <textarea id="workoutDescription" class="textarea" rows="2"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Exercícios</label>
-                    <div class="exercise-selector">
-                        <select id="exerciseSelect" class="select">
-                            <option value="">Selecione um exercício...</option>
-                        </select>
-                        <button type="button" class="btn btn-secondary" onclick="addExerciseToWorkout()">+ Adicionar</button>
+                <div class="hero-image">
+                    <div class="hero-illustration">
+                        <div class="illustration-circle circle-1"></div>
+                        <div class="illustration-circle circle-2"></div>
+                        <div class="illustration-circle circle-3"></div>
+                        <svg class="fitness-illustration" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background gradient circle -->
+                            <defs>
+                                <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#3c7333;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#5e9553;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="barbellGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#2d5015;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#1a5013;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Person doing squat with barbell -->
+                            <!-- Head -->
+                            <circle class="head" cx="200" cy="80" r="28" fill="#fdbcb4" stroke="#e8a99b" stroke-width="2" />
+                            
+                            <!-- Body/Torso -->
+                            <ellipse class="torso" cx="200" cy="160" rx="40" ry="55" fill="url(#bodyGradient)" stroke="#1a5013" stroke-width="2" />
+                            
+                            <!-- Arms holding barbell -->
+                            <line class="arm-left" x1="160" y1="140" x2="110" y2="100" stroke="url(#bodyGradient)" stroke-width="14" stroke-linecap="round" />
+                            <line class="arm-right" x1="240" y1="140" x2="290" y2="100" stroke="url(#bodyGradient)" stroke-width="14" stroke-linecap="round" />
+                            
+                            <!-- Barbell -->
+                            <line class="barbell" x1="90" y1="100" x2="310" y2="100" stroke="url(#barbellGradient)" stroke-width="10" stroke-linecap="round" />
+                            
+                            <!-- Left Weight Stack -->
+                            <g class="weight-left">
+                                <!-- Weight plates stacked -->
+                                <circle cx="90" cy="100" r="22" fill="#2d5015" stroke="#0d3a0a" stroke-width="2" />
+                                <circle cx="90" cy="100" r="18" fill="#1a5013" stroke="#0d3a0a" stroke-width="1.5" />
+                                <circle cx="90" cy="100" r="14" fill="#2d5015" stroke="#0d3a0a" stroke-width="1" />
+                                <circle cx="90" cy="100" r="10" fill="#1a5013" stroke="#0d3a0a" stroke-width="1" />
+                                <!-- Inner hole -->
+                                <circle cx="90" cy="100" r="4" fill="#0d3a0a" />
+                                <!-- Weight details -->
+                                <line x1="90" y1="78" x2="90" y2="82" stroke="#0d3a0a" stroke-width="1.5" />
+                                <line x1="90" y1="118" x2="90" y2="122" stroke="#0d3a0a" stroke-width="1.5" />
+                                <line x1="78" y1="100" x2="82" y2="100" stroke="#0d3a0a" stroke-width="1.5" />
+                                <line x1="98" y1="100" x2="102" y2="100" stroke="#0d3a0a" stroke-width="1.5" />
+                            </g>
+                            
+                            <!-- Right Weight Stack -->
+                            <g class="weight-right">
+                                <!-- Weight plates stacked -->
+                                <circle cx="310" cy="100" r="22" fill="#2d5015" stroke="#0d3a0a" stroke-width="2" />
+                                <circle cx="310" cy="100" r="18" fill="#1a5013" stroke="#0d3a0a" stroke-width="1.5" />
+                                <circle cx="310" cy="100" r="14" fill="#2d5015" stroke="#0d3a0a" stroke-width="1" />
+                                <circle cx="310" cy="100" r="10" fill="#1a5013" stroke="#0d3a0a" stroke-width="1" />
+                                <!-- Inner hole -->
+                                <circle cx="310" cy="100" r="4" fill="#0d3a0a" />
+                                <!-- Weight details -->
+                                <line x1="310" y1="78" x2="310" y2="82" stroke="#0d3a0a" stroke-width="1.5" />
+                                <line x1="310" y1="118" x2="310" y2="122" stroke="#0d3a0a" stroke-width="1.5" />
+                                <line x1="298" y1="100" x2="302" y2="100" stroke="#0d3a0a" stroke-width="1.5" />
+                                <line x1="318" y1="100" x2="322" y2="100" stroke="#0d3a0a" stroke-width="1.5" />
+                            </g>
+                            
+                            <!-- Legs in squat position -->
+                            <ellipse class="leg-left" cx="175" cy="250" rx="22" ry="65" fill="url(#bodyGradient)" stroke="#1a5013" stroke-width="2" transform="rotate(-15 175 250)" />
+                            <ellipse class="leg-right" cx="225" cy="250" rx="22" ry="65" fill="url(#bodyGradient)" stroke="#1a5013" stroke-width="2" transform="rotate(15 225 250)" />
+                            
+                            <!-- Feet -->
+                            <ellipse class="foot-left" cx="165" cy="315" rx="28" ry="14" fill="#2d5015" stroke="#1a5013" stroke-width="2" />
+                            <ellipse class="foot-right" cx="235" cy="315" rx="28" ry="14" fill="#2d5015" stroke="#1a5013" stroke-width="2" />
+                            
+                            <!-- Energy particles -->
+                            <circle class="particle particle-1" cx="150" cy="200" r="5" fill="#a3da93" opacity="0.9" />
+                            <circle class="particle particle-2" cx="250" cy="180" r="4" fill="#a3da93" opacity="0.7" />
+                            <circle class="particle particle-3" cx="180" cy="300" r="6" fill="#a3da93" opacity="0.8" />
+                            <circle class="particle particle-4" cx="220" cy="290" r="5" fill="#a3da93" opacity="0.6" />
+                            <circle class="particle particle-5" cx="140" cy="150" r="4" fill="#a3da93" opacity="0.7" />
+                            <circle class="particle particle-6" cx="260" cy="220" r="5" fill="#a3da93" opacity="0.8" />
+                            <circle class="particle particle-7" cx="160" cy="280" r="4" fill="#a3da93" opacity="0.6" />
+                            <circle class="particle particle-8" cx="240" cy="310" r="5" fill="#a3da93" opacity="0.7" />
+                        </svg>
                     </div>
                 </div>
-
-                <div id="selectedExercises" class="selected-exercises">
-                    <!-- Exercícios selecionados aparecerão aqui -->
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('workoutModal')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Criar Treino</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Adicionar ao Plano -->
-    <div id="planModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Adicionar ao Plano Semanal</h3>
-                <span class="close" onclick="closeModal('planModal')">&times;</span>
             </div>
-            <form id="planForm" class="form">
-                <div class="form-group">
-                    <label for="planWorkout">Treino</label>
-                    <select id="planWorkout" class="select" required>
-                        <option value="">Selecione um treino...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="planDay">Dia da Semana</label>
-                    <select id="planDay" class="select" required>
-                        <option value="Segunda">Segunda-feira</option>
-                        <option value="Terça">Terça-feira</option>
-                        <option value="Quarta">Quarta-feira</option>
-                        <option value="Quinta">Quinta-feira</option>
-                        <option value="Sexta">Sexta-feira</option>
-                        <option value="Sábado">Sábado</option>
-                        <option value="Domingo">Domingo</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="planTime">Horário (opcional)</label>
-                    <input type="time" id="planTime" class="input">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('planModal')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Adicionar</button>
-                </div>
-            </form>
         </div>
-    </div>
+    </section>
+
+    <!-- Funcionalidades Section -->
+    <section id="funcionalidades" class="features-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2 class="section-title">Funcionalidades</h2>
+                <p class="section-subtitle">Tudo que você precisa para gerenciar seus treinos com eficiência</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3 class="feature-title">Planejamento Semanal</h3>
+                    <p class="feature-description">
+                        Organize seus treinos por dias da semana e grupos musculares de forma intuitiva e visual.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3 class="feature-title">Check-in de Exercícios</h3>
+                    <p class="feature-description">
+                        Sistema interativo de checklist para acompanhar o progresso de cada treino em tempo real.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Estatísticas de Desempenho</h3>
+                    <p class="feature-description">
+                        Visualize gráficos e métricas detalhadas sobre seu progresso e evolução ao longo do tempo.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">Histórico Completo</h3>
+                    <p class="feature-description">
+                        Acesse todo o histórico de treinos realizados com avaliações e notas para análise completa.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3 class="feature-title">Avaliação de Treinos</h3>
+                    <p class="feature-description">
+                        Sistema de avaliação por estrelas para registrar a qualidade e dificuldade de cada treino.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3 class="feature-title">Salvamento Automático</h3>
+                    <p class="feature-description">
+                        Seu progresso é salvo automaticamente, garantindo que nenhum dado seja perdido.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Para Personal Trainer Section -->
+    <section id="personal" class="personal-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2 class="section-title">Para Personal Trainer</h2>
+                <p class="section-subtitle">Gerencie seus clientes e treinos com total controle</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">👥</div>
+                    <h3>Gerenciar Clientes</h3>
+                    <p>Cadastre e gerencie todos os seus clientes em um só lugar. Visualize informações completas e histórico de cada um.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🏋️</div>
+                    <h3>Criar e Atribuir Treinos</h3>
+                    <p>Crie treinos personalizados com exercícios específicos e atribua aos seus clientes de forma rápida e eficiente.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📈</div>
+                    <h3>Visualizar Progresso</h3>
+                    <p>Acompanhe o progresso de cada cliente com estatísticas detalhadas, gráficos e relatórios completos.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Estatísticas Detalhadas</h3>
+                    <p>Tenha acesso a métricas avançadas sobre frequência, desempenho e evolução de todos os seus clientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Para Clientes Section -->
+    <section id="clientes" class="clients-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2 class="section-title">Para Clientes</h2>
+                <p class="section-subtitle">Acompanhe seus treinos e alcance seus objetivos</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">📅</div>
+                    <h3>Visualizar Plano Semanal</h3>
+                    <p>Veja toda a sua rotina de treinos organizada por dias da semana de forma clara e intuitiva.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✅</div>
+                    <h3>Checklist Interativo</h3>
+                    <p>Marque os exercícios conforme você os realiza. Interface simples e rápida para check-in durante o treino.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">💾</div>
+                    <h3>Salvar Progresso Automaticamente</h3>
+                    <p>Seu progresso é salvo automaticamente, sem necessidade de ações manuais. Foque apenas em treinar.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Histórico e Estatísticas Pessoais</h3>
+                    <p>Acompanhe sua evolução com gráficos, estatísticas e histórico completo de todos os seus treinos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login" class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h2>💪 FitZone</h2>
+                        <p>Entre no sistema para começar</p>
+                    </div>
+
+                    <form id="loginForm" class="login-form">
+                        <div id="loginError" class="error-message" style="display: none;"></div>
+                        
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" class="input" placeholder="seu@email.com" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Senha</label>
+                            <input type="password" id="password" class="input" placeholder="••••••••" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block btn-large">
+                            Entrar
+                        </button>
+                    </form>
+
+                    <div class="login-footer">
+                        <p>Não tem uma conta? <a href="#" onclick="showRegisterInfo()">Entre em contato</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>💪 FitZone</h3>
+                    <p>Sistema de Gerenciamento de Treinos</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navegação</h4>
+                        <ul>
+                            <li><a href="#inicio">Início</a></li>
+                            <li><a href="#funcionalidades">Funcionalidades</a></li>
+                            <li><a href="#personal">Para Personais</a></li>
+                            <li><a href="#clientes">Para Alunos</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Sistema</h4>
+                        <ul>
+                            <li><a href="#login">Login</a></li>
+                            <li><a href="#" onclick="scrollToLogin()">Acessar Sistema</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FitZone. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Loading -->
     <div id="loading" class="loading">
@@ -223,6 +373,6 @@
     </div>
 
     <script src="config.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/landing.js"></script>
 </body>
 </html>

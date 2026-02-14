@@ -5,7 +5,7 @@ if (typeof window.API_URL === 'undefined') {
 
 // Verificar autenticação
 if (!isAuthenticated()) {
-    window.location.href = 'login.html';
+    window.location.href = 'landing.html';
 }
 
 const user = getAuthUser();
